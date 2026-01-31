@@ -35,11 +35,12 @@ class BootScene extends Phaser.Scene {
             loadingText.setText('Ready!');
         });
 
-        // For now, we have no assets to load (using graphics)
-        // This is where we'd load sprites/audio in the future
-
-        // Simulate minimum load time for smooth transition
-        // In a real game with assets, remove this
+        // Load audio assets
+        this.load.audio('coin1', 'assets/audio/coin.mp3');
+        this.load.audio('coin2', 'assets/audio/coin2.mp3');
+        this.load.audio('coin3', 'assets/audio/coin3.mp3');
+        this.load.audio('powerup', 'assets/audio/powerup.mp3');
+        this.load.audio('gameover', 'assets/audio/gameover.mp3');
     }
 
     create() {

@@ -356,6 +356,15 @@ class GameScene extends Phaser.Scene {
         this.currencyManager.addCoins(value);
         this.coinsText.setText(`Coins: ${this.currencyManager.getCoins()}`);
 
+        // Play coin sound based on value (ascending for better coins)
+        if (value >= 5) {
+            this.sound.play('coin3');
+        } else if (value >= 3) {
+            this.sound.play('coin2');
+        } else {
+            this.sound.play('coin1');
+        }
+
         const idx = this.coinDrops.indexOf(coin);
         if (idx > -1) {
             this.coinDrops.splice(idx, 1);
@@ -381,6 +390,7 @@ class GameScene extends Phaser.Scene {
         const type = powerUp.getType();
         this.activatePowerUp(type);
 
+        this.sound.play('powerup');
         powerUp.collect();
 
         const idx = this.powerUps.indexOf(powerUp);
@@ -611,6 +621,7 @@ class GameScene extends Phaser.Scene {
 
     gameOver() {
         this.isGameOver = true;
+        this.sound.play('gameover');
 
         // Update stats
         this.saveData.totalRuns++;
