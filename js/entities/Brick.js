@@ -10,28 +10,38 @@ class Brick {
         this.points = this.config.points;
         this.coinDrop = this.config.coinDrop;
 
-        // Create brick rectangle
-        this.sprite = scene.add.rectangle(
-            x, y,
-            CONFIG.BRICK.WIDTH,
-            CONFIG.BRICK.HEIGHT,
-            this.config.color
-        );
+        // Check if sprite texture exists
+        const spriteKey = this.config.sprite;
+        const hasSprite = spriteKey && scene.textures.exists(spriteKey);
+
+        if (hasSprite) {
+            // Create brick sprite
+            this.sprite = scene.add.image(x, y, spriteKey);
+            this.sprite.setDisplaySize(CONFIG.BRICK.WIDTH, CONFIG.BRICK.HEIGHT);
+        } else {
+            // Fallback to rectangle if sprite not loaded
+            this.sprite = scene.add.rectangle(
+                x, y,
+                CONFIG.BRICK.WIDTH,
+                CONFIG.BRICK.HEIGHT,
+                this.config.color
+            );
+            this.sprite.setStrokeStyle(2, 0x000000, 0.3);
+        }
 
         scene.physics.add.existing(this.sprite, true); // true = static body
 
         // Store reference
         this.sprite.parentClass = this;
 
-        // Add border for visibility
-        this.sprite.setStrokeStyle(2, 0x000000, 0.3);
-
         // HP indicator for multi-hit bricks
         if (this.maxHp > 1 && this.maxHp !== Infinity) {
             this.hpText = scene.add.text(x, y, this.hp.toString(), {
                 fontSize: '14px',
                 fontFamily: 'Arial',
-                color: '#ffffff'
+                color: '#ffffff',
+                stroke: '#000000',
+                strokeThickness: 2
             }).setOrigin(0.5);
         }
     }
@@ -64,13 +74,12 @@ class Brick {
             yoyo: true
         });
 
-        // Update color based on remaining HP
+        // Darken sprite based on remaining HP (for multi-hit bricks)
         if (this.hp > 0 && this.maxHp > 1) {
             const hpRatio = this.hp / this.maxHp;
-            const darkenAmount = 1 - (0.3 * (1 - hpRatio));
-            const color = Phaser.Display.Color.ValueToColor(this.config.color);
-            color.darken(30 * (1 - hpRatio));
-            this.sprite.setFillStyle(color.color);
+            // Apply tint to show damage
+            const tintValue = Math.floor(255 * (0.5 + 0.5 * hpRatio));
+            this.sprite.setTint(Phaser.Display.Color.GetColor(tintValue, tintValue, tintValue));
         }
 
         return this.hp <= 0;

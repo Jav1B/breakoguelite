@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "mcp__hf-mcp-server__gr1_flux_1_krea_dev_infer",
+      "Bash(curl:*)",
+      "mcp__hf-mcp-server__gr2_z_image_turbo_generate",
+      "Bash(setx GEMINI_API_KEY \"AIzaSyBMwcPAMWf9VTGeyoa7g6UCS_Gk8MVViK8\")",
+      "Bash(export GEMINI_API_KEY=\"AIzaSyBMwcPAMWf9VTGeyoa7g6UCS_Gk8MVViK8\")"
+    ]
+  }
+}

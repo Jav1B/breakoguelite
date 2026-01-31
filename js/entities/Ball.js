@@ -3,12 +3,15 @@ class Ball {
     constructor(scene, x, y) {
         this.scene = scene;
 
-        // Create ball as a circle
-        this.sprite = scene.add.circle(x, y, CONFIG.BALL.RADIUS, CONFIG.BALL.COLOR);
+        // Create ball as a sprite
+        this.sprite = scene.add.sprite(x, y, 'ball-normal');
+        this.sprite.setDisplaySize(CONFIG.BALL.RADIUS * 2, CONFIG.BALL.RADIUS * 2);
         scene.physics.add.existing(this.sprite, false);
 
         // Configure physics
-        this.sprite.body.setCircle(CONFIG.BALL.RADIUS);
+        this.sprite.body.setCircle(CONFIG.BALL.RADIUS,
+            (this.sprite.displayWidth / 2) - CONFIG.BALL.RADIUS,
+            (this.sprite.displayHeight / 2) - CONFIG.BALL.RADIUS);
         this.sprite.body.setCollideWorldBounds(true);
         this.sprite.body.setBounce(1, 1);
 
@@ -114,7 +117,7 @@ class Ball {
 
     setFireball(active) {
         this.isFireball = active;
-        this.sprite.setFillStyle(active ? 0xef5350 : CONFIG.BALL.COLOR);
+        this.sprite.setTexture(active ? 'ball-fireball' : 'ball-normal');
     }
 
     setSpeed(speed) {
@@ -150,7 +153,7 @@ class Ball {
     reset(paddle) {
         this.isLaunched = false;
         this.isFireball = false;
-        this.sprite.setFillStyle(CONFIG.BALL.COLOR);
+        this.sprite.setTexture('ball-normal');
         this.sprite.x = paddle.getX();
         this.sprite.y = paddle.getY() - CONFIG.PADDLE.HEIGHT / 2 - CONFIG.BALL.RADIUS - 2;
         this.sprite.body.setVelocity(0, 0);

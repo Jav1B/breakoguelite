@@ -46,6 +46,35 @@ class BootScene extends Phaser.Scene {
         // Load flag images
         this.load.image('flag-en', 'https://flagcdn.com/w40/gb.png');
         this.load.image('flag-es', 'https://flagcdn.com/w40/es.png');
+
+        // Load sprite images
+        this.load.image('ball-normal', 'assets/sprites/ball-normal.png');
+        this.load.image('ball-fireball', 'assets/sprites/ball-fireball.png');
+        this.load.image('paddle-standard', 'assets/sprites/paddle-standard.png');
+        this.load.image('paddle-wide', 'assets/sprites/paddle-wide.png');
+
+        // Load brick sprites
+        this.load.image('brick-normal', 'assets/sprites/bricks/brick-normal.webp');
+        this.load.image('brick-tough', 'assets/sprites/bricks/brick-tough.webp');
+        this.load.image('brick-tough3', 'assets/sprites/bricks/brick-tough3.webp');
+        this.load.image('brick-explosive', 'assets/sprites/bricks/brick-explosive.webp');
+        this.load.image('brick-gold', 'assets/sprites/bricks/brick-gold.webp');
+        this.load.image('brick-mystery', 'assets/sprites/bricks/brick-mystery.webp');
+        this.load.image('brick-indestructible', 'assets/sprites/bricks/brick-indestructible.webp');
+
+        // Load power-up sprites
+        this.load.image('powerup-multiball', 'assets/sprites/powerups/powerup-multiball.webp');
+        this.load.image('powerup-wide-paddle', 'assets/sprites/powerups/powerup-wide-paddle.webp');
+        this.load.image('powerup-fireball', 'assets/sprites/powerups/powerup-fireball.webp');
+        this.load.image('powerup-slow', 'assets/sprites/powerups/powerup-slow.webp');
+        this.load.image('powerup-shield', 'assets/sprites/powerups/powerup-shield.webp');
+        this.load.image('powerup-magnet', 'assets/sprites/powerups/powerup-magnet.webp');
+
+        // Load background images
+        this.load.image('bg-menu', 'assets/sprites/backgrounds/bg-menu.webp');
+        this.load.image('bg-game', 'assets/sprites/backgrounds/bg-game.webp');
+        this.load.image('bg-shop', 'assets/sprites/backgrounds/bg-shop.webp');
+        this.load.image('bg-gameover', 'assets/sprites/backgrounds/bg-gameover.webp');
     }
 
     create() {

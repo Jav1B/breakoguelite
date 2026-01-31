@@ -47,13 +47,13 @@ const CONFIG = {
 
     // Brick types with their properties (reduced coin drops for difficulty)
     BRICK_TYPES: {
-        NORMAL: { hp: 1, color: 0x26a69a, points: 10, coinDrop: 1 },
-        TOUGH: { hp: 2, color: 0x5c6bc0, points: 25, coinDrop: 1 },
-        TOUGH3: { hp: 3, color: 0x7e57c2, points: 40, coinDrop: 2 },
-        EXPLOSIVE: { hp: 1, color: 0xef5350, points: 15, coinDrop: 1, explosive: true },
-        GOLD: { hp: 1, color: 0xffd700, points: 50, coinDrop: 3 },
-        MYSTERY: { hp: 1, color: 0xe040fb, points: 20, coinDrop: 1, dropsPowerUp: true },
-        INDESTRUCTIBLE: { hp: Infinity, color: 0x424242, points: 0, coinDrop: 0 }
+        NORMAL: { hp: 1, color: 0x26a69a, points: 10, coinDrop: 1, sprite: 'brick-normal' },
+        TOUGH: { hp: 2, color: 0x5c6bc0, points: 25, coinDrop: 1, sprite: 'brick-tough' },
+        TOUGH3: { hp: 3, color: 0x7e57c2, points: 40, coinDrop: 2, sprite: 'brick-tough3' },
+        EXPLOSIVE: { hp: 1, color: 0xef5350, points: 15, coinDrop: 1, explosive: true, sprite: 'brick-explosive' },
+        GOLD: { hp: 1, color: 0xffd700, points: 50, coinDrop: 3, sprite: 'brick-gold' },
+        MYSTERY: { hp: 1, color: 0xe040fb, points: 20, coinDrop: 1, dropsPowerUp: true, sprite: 'brick-mystery' },
+        INDESTRUCTIBLE: { hp: Infinity, color: 0x424242, points: 0, coinDrop: 0, sprite: 'brick-indestructible' }
     },
 
     // Gameplay settings
@@ -68,12 +68,12 @@ const CONFIG = {
 
     // Power-up types
     POWERUP_TYPES: {
-        MULTIBALL: { color: 0x4fc3f7, duration: 0 },
-        WIDE_PADDLE: { color: 0x66bb6a, duration: 15000 },
-        FIREBALL: { color: 0xef5350, duration: 10000 },
-        SLOW: { color: 0xffee58, duration: 10000 },
-        SHIELD: { color: 0x42a5f5, duration: 0 },
-        MAGNET: { color: 0xab47bc, duration: 12000 }
+        MULTIBALL: { color: 0x4fc3f7, duration: 0, sprite: 'powerup-multiball' },
+        WIDE_PADDLE: { color: 0x66bb6a, duration: 15000, sprite: 'powerup-wide-paddle' },
+        FIREBALL: { color: 0xef5350, duration: 10000, sprite: 'powerup-fireball' },
+        SLOW: { color: 0xffee58, duration: 10000, sprite: 'powerup-slow' },
+        SHIELD: { color: 0x42a5f5, duration: 0, sprite: 'powerup-shield' },
+        MAGNET: { color: 0xab47bc, duration: 12000, sprite: 'powerup-magnet' }
     },
 
     // Shop prices (in coins)

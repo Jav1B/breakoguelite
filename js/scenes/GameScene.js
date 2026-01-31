@@ -5,6 +5,13 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+        // Add background
+        if (this.textures.exists('bg-game')) {
+            this.add.image(CONFIG.GAME_WIDTH / 2, CONFIG.GAME_HEIGHT / 2, 'bg-game')
+                .setDisplaySize(CONFIG.GAME_WIDTH, CONFIG.GAME_HEIGHT)
+                .setAlpha(0.6);
+        }
+
         // Initialize managers
         this.saveData = this.game.saveData;
         this.currencyManager = new CurrencyManager(this.saveData);

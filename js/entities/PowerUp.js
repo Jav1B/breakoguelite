@@ -5,12 +5,24 @@ class PowerUp {
         this.type = type;
         this.config = CONFIG.POWERUP_TYPES[type];
 
-        // Create power-up as a small rectangle/diamond
-        this.sprite = scene.add.rectangle(
-            x, y,
-            24, 24,
-            this.config.color
-        );
+        // Check if sprite texture exists
+        const spriteKey = this.config.sprite;
+        const hasSprite = spriteKey && scene.textures.exists(spriteKey);
+
+        if (hasSprite) {
+            // Create power-up sprite
+            this.sprite = scene.add.image(x, y, spriteKey);
+            this.sprite.setDisplaySize(32, 32);
+        } else {
+            // Fallback to rectangle/diamond if sprite not loaded
+            this.sprite = scene.add.rectangle(
+                x, y,
+                24, 24,
+                this.config.color
+            );
+            this.sprite.setAngle(45);
+            this.sprite.setStrokeStyle(2, 0xffffff, 0.5);
+        }
 
         scene.physics.add.existing(this.sprite, false);
 
@@ -20,12 +32,6 @@ class PowerUp {
 
         // Store reference
         this.sprite.parentClass = this;
-
-        // Rotate for visual effect
-        this.sprite.setAngle(45);
-
-        // Add glow effect
-        this.sprite.setStrokeStyle(2, 0xffffff, 0.5);
 
         // Pulsing animation
         scene.tweens.add({

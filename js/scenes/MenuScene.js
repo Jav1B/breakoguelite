@@ -10,6 +10,13 @@ class MenuScene extends Phaser.Scene {
         const saveData = this.game.saveData;
         const t = (key) => localizationManager.t(key);
 
+        // Add background
+        if (this.textures.exists('bg-menu')) {
+            this.add.image(width / 2, height / 2, 'bg-menu')
+                .setDisplaySize(width, height)
+                .setAlpha(0.7);
+        }
+
         // Language flags (top right)
         this.createLanguageFlags(width);
 

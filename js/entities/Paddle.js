@@ -7,8 +7,9 @@ class Paddle {
         const width = CONFIG.PADDLE.WIDTH;
         const height = CONFIG.PADDLE.HEIGHT;
 
-        // Create as a rectangle with physics
-        this.sprite = scene.add.rectangle(x, y, width, height, CONFIG.PADDLE.COLOR);
+        // Create as a sprite with physics
+        this.sprite = scene.add.sprite(x, y, 'paddle-standard');
+        this.sprite.setDisplaySize(width, height);
         scene.physics.add.existing(this.sprite, false);
 
         // Configure physics body
@@ -21,6 +22,7 @@ class Paddle {
         // Track current width for power-ups
         this.baseWidth = width;
         this.currentWidth = width;
+        this.isWide = false;
     }
 
     update(inputX) {
@@ -36,24 +38,26 @@ class Paddle {
         this.sprite.x = Phaser.Math.Linear(this.sprite.x, targetX, 0.3);
     }
 
-    setWidth(width) {
+    setWidth(width, isWide = false) {
         this.currentWidth = width;
-        this.sprite.setSize(width, CONFIG.PADDLE.HEIGHT);
+        this.isWide = isWide;
+        this.sprite.setTexture(isWide ? 'paddle-wide' : 'paddle-standard');
+        this.sprite.setDisplaySize(width, CONFIG.PADDLE.HEIGHT);
         this.sprite.body.setSize(width, CONFIG.PADDLE.HEIGHT);
     }
 
     applyWidePaddle(multiplier = 1.3) {
-        this.setWidth(this.baseWidth * multiplier);
+        this.setWidth(this.baseWidth * multiplier, true);
     }
 
     resetWidth() {
-        this.setWidth(this.baseWidth);
+        this.setWidth(this.baseWidth, false);
     }
 
     setBaseWidth(width) {
         this.baseWidth = width;
         this.currentWidth = width;
-        this.setWidth(width);
+        this.setWidth(width, this.isWide);
     }
 
     getX() {

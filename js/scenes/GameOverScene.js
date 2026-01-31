@@ -17,6 +17,13 @@ class GameOverScene extends Phaser.Scene {
         const saveData = this.game.saveData;
         const t = (key) => localizationManager.t(key);
 
+        // Add background
+        if (this.textures.exists('bg-gameover')) {
+            this.add.image(width / 2, height / 2, 'bg-gameover')
+                .setDisplaySize(width, height)
+                .setAlpha(0.6);
+        }
+
         // Title
         this.add.text(width / 2, 100, t('gameOver'), {
             fontSize: '42px',

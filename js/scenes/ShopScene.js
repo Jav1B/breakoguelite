@@ -16,8 +16,17 @@ class ShopScene extends Phaser.Scene {
         const height = this.cameras.main.height;
         const t = (key) => localizationManager.t(key);
 
-        // Semi-transparent background
-        this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8);
+        // Add background image or fallback to semi-transparent overlay
+        if (this.textures.exists('bg-shop')) {
+            this.add.image(width / 2, height / 2, 'bg-shop')
+                .setDisplaySize(width, height)
+                .setAlpha(0.5);
+            // Dark overlay on top
+            this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.5);
+        } else {
+            // Semi-transparent background fallback
+            this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8);
+        }
 
         // Title
         this.add.text(width / 2, 80, t('shop'), {
