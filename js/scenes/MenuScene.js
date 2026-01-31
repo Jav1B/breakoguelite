@@ -89,77 +89,39 @@ class MenuScene extends Phaser.Scene {
         const currentLang = localizationManager.getLanguage();
 
         // UK Flag
-        const ukFlag = this.createFlag(startX, flagY, 'en', currentLang === 'en');
+        this.createFlag(startX, flagY, 'en', currentLang === 'en');
 
         // Spain Flag
-        const esFlag = this.createFlag(startX + flagSpacing, flagY, 'es', currentLang === 'es');
+        this.createFlag(startX + flagSpacing, flagY, 'es', currentLang === 'es');
     }
 
     createFlag(x, y, lang, isActive) {
-        const flagWidth = 36;
-        const flagHeight = 24;
+        // Use loaded flag images from CDN
+        const flag = this.add.image(x, y, `flag-${lang}`)
+            .setDisplaySize(40, 27)
+            .setInteractive({ useHandCursor: true });
 
-        // Flag container
-        const container = this.add.container(x, y);
-
-        // Draw flag based on language
-        if (lang === 'en') {
-            // UK Flag (simplified Union Jack)
-            const bg = this.add.rectangle(0, 0, flagWidth, flagHeight, 0x012169);
-
-            // White diagonals
-            const diagWhite1 = this.add.rectangle(0, 0, flagWidth * 1.5, 4, 0xffffff).setAngle(33);
-            const diagWhite2 = this.add.rectangle(0, 0, flagWidth * 1.5, 4, 0xffffff).setAngle(-33);
-
-            // Red diagonals
-            const diagRed1 = this.add.rectangle(0, 0, flagWidth * 1.5, 2, 0xc8102e).setAngle(33);
-            const diagRed2 = this.add.rectangle(0, 0, flagWidth * 1.5, 2, 0xc8102e).setAngle(-33);
-
-            // White cross
-            const crossWhiteH = this.add.rectangle(0, 0, flagWidth, 6, 0xffffff);
-            const crossWhiteV = this.add.rectangle(0, 0, 6, flagHeight, 0xffffff);
-
-            // Red cross
-            const crossRedH = this.add.rectangle(0, 0, flagWidth, 4, 0xc8102e);
-            const crossRedV = this.add.rectangle(0, 0, 4, flagHeight, 0xc8102e);
-
-            container.add([bg, diagWhite1, diagWhite2, diagRed1, diagRed2, crossWhiteH, crossWhiteV, crossRedH, crossRedV]);
-        } else if (lang === 'es') {
-            // Spain Flag
-            const redTop = this.add.rectangle(0, -flagHeight/3, flagWidth, flagHeight/3, 0xc60b1e);
-            const yellow = this.add.rectangle(0, 0, flagWidth, flagHeight/3, 0xffc400);
-            const redBottom = this.add.rectangle(0, flagHeight/3, flagWidth, flagHeight/3, 0xc60b1e);
-
-            container.add([redTop, yellow, redBottom]);
-        }
-
-        // Border
-        const border = this.add.rectangle(0, 0, flagWidth, flagHeight)
+        // Border/highlight for active language
+        const border = this.add.rectangle(x, y, 44, 31)
             .setStrokeStyle(isActive ? 3 : 1, isActive ? 0x4fc3f7 : 0x666666)
             .setFillStyle();
-        container.add(border);
 
-        // Make interactive
-        const hitArea = this.add.rectangle(0, 0, flagWidth, flagHeight, 0x000000, 0)
-            .setInteractive({ useHandCursor: true });
-        container.add(hitArea);
-
-        hitArea.on('pointerover', () => {
+        flag.on('pointerover', () => {
             if (!isActive) border.setStrokeStyle(2, 0x888888);
         });
 
-        hitArea.on('pointerout', () => {
+        flag.on('pointerout', () => {
             if (!isActive) border.setStrokeStyle(1, 0x666666);
         });
 
-        hitArea.on('pointerdown', () => {
+        flag.on('pointerdown', () => {
             if (localizationManager.getLanguage() !== lang) {
                 localizationManager.setLanguage(lang);
                 this.scene.restart();
             }
         });
 
-        return container;
+        return flag;
     }
 
     createButton(x, y, text, callback) {

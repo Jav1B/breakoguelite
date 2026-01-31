@@ -68,12 +68,12 @@ const CONFIG = {
 
     // Power-up types
     POWERUP_TYPES: {
-        MULTIBALL: { name: 'Multi-Ball', color: 0x4fc3f7, duration: 0 },
-        WIDE_PADDLE: { name: 'Wide Paddle', color: 0x66bb6a, duration: 15000 },
-        FIREBALL: { name: 'Fireball', color: 0xef5350, duration: 10000 },
-        SLOW: { name: 'Slow Motion', color: 0xffee58, duration: 10000 },
-        SHIELD: { name: 'Shield', color: 0x42a5f5, duration: 0 },
-        MAGNET: { name: 'Magnet', color: 0xab47bc, duration: 12000 }
+        MULTIBALL: { color: 0x4fc3f7, duration: 0 },
+        WIDE_PADDLE: { color: 0x66bb6a, duration: 15000 },
+        FIREBALL: { color: 0xef5350, duration: 10000 },
+        SLOW: { color: 0xffee58, duration: 10000 },
+        SHIELD: { color: 0x42a5f5, duration: 0 },
+        MAGNET: { color: 0xab47bc, duration: 12000 }
     },
 
     // Shop prices (in coins)
