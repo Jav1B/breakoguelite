@@ -67,6 +67,9 @@ class WaveManager {
         // TOUGH3: Starts wave 3 (was wave 5)
         const tough3Chance = wave >= 3 ? Math.min(0.05 + (wave - 3) * 0.03, 0.25) : 0;
         const explosiveChance = wave >= 3 ? 0.08 : 0;
+        const bombPurpleChance = wave >= 4 ? 0.03 : 0;
+        const bombRedChance = wave >= 5 ? 0.02 : 0;
+        const bombGoldChance = wave >= 6 ? 0.015 : 0;
         const goldChance = 0.05;
         const mysteryChance = 0.05;
         // INDESTRUCTIBLE: Starts wave 2 (was wave 4)
@@ -85,6 +88,15 @@ class WaveManager {
 
         cumulative += explosiveChance;
         if (rand < cumulative) return 'EXPLOSIVE';
+
+        cumulative += bombPurpleChance;
+        if (rand < cumulative) return 'BOMB_PURPLE';
+
+        cumulative += bombRedChance;
+        if (rand < cumulative) return 'BOMB_RED';
+
+        cumulative += bombGoldChance;
+        if (rand < cumulative) return 'BOMB_GOLD';
 
         cumulative += goldChance;
         if (rand < cumulative) return 'GOLD';

@@ -21,8 +21,10 @@ const TRANSLATIONS = {
         wave: 'Wave',
         lives: 'Lives',
         coins: 'Coins',
+        time: 'Time',
         waveComplete: 'WAVE COMPLETE!',
         shieldUsed: 'Shield Used!',
+        timePressureWarning: 'BRICKS DESCENDING!',
 
         // Shop Scene
         shop: 'SHOP',
@@ -105,8 +107,10 @@ const TRANSLATIONS = {
         wave: 'Oleada',
         lives: 'Vidas',
         coins: 'Monedas',
+        time: 'Tiempo',
         waveComplete: 'OLEADA COMPLETADA!',
         shieldUsed: 'Escudo Usado!',
+        timePressureWarning: '¡LADRILLOS BAJANDO!',
 
         // Shop Scene
         shop: 'TIENDA',

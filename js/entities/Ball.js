@@ -34,7 +34,9 @@ class Ball {
         // Wave and rally scaling
         this.waveSpeedMultiplier = 1.0;  // 8% increase per wave
         this.rallyHits = 0;              // Paddle hits since last ball loss
-        this.rallyAcceleration = 0.02;   // 2% speed increase per paddle hit
+        this.rallyAcceleration = CONFIG.BALL.RALLY_ACCELERATION;   // 2% speed increase per paddle hit
+        this.brickHits = 0;              // Bricks destroyed since last ball loss
+        this.brickAcceleration = CONFIG.BALL.BRICK_ACCELERATION;   // 0.5% speed increase per brick hit
 
         // Trail effect (simple)
         this.trail = [];
@@ -81,11 +83,12 @@ class Ball {
         );
     }
 
-    // Calculate effective speed based on wave and rally
+    // Calculate effective speed based on wave, rally, and brick hits
     getEffectiveSpeed() {
         const waveSpeed = this.baseSpeed * this.waveSpeedMultiplier;
         const rallyBonus = 1 + (this.rallyHits * this.rallyAcceleration);
-        return Math.min(waveSpeed * rallyBonus, this.maxSpeed);
+        const brickBonus = 1 + (this.brickHits * this.brickAcceleration);
+        return Math.min(waveSpeed * rallyBonus * brickBonus, this.maxSpeed);
     }
 
     // Set wave multiplier (called at wave start)
@@ -97,6 +100,19 @@ class Ball {
     // Reset rally counter (called when spawning new ball after loss)
     resetRally() {
         this.rallyHits = 0;
+        this.brickHits = 0;
+    }
+
+    // Called when ball destroys a brick
+    onBrickHit() {
+        this.brickHits++;
+        
+        // Apply brick acceleration (smaller than rally acceleration)
+        const currentSpeed = this.sprite.body.velocity.length();
+        const newSpeed = Math.min(currentSpeed * (1 + this.brickAcceleration), this.maxSpeed);
+        
+        const vel = this.sprite.body.velocity;
+        vel.normalize().scale(newSpeed);
     }
 
     onPaddleHit(paddle) {

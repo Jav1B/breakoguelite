@@ -31,7 +31,8 @@ const CONFIG = {
         BASE_SPEED: 400,
         MAX_SPEED: 600,
         MIN_SPEED: 300,
-        COLOR: 0xffffff
+        RALLY_ACCELERATION: 0.02,  // 2% speed increase per paddle hit
+        BRICK_ACCELERATION: 0.005   // 0.5% speed increase per brick hit
     },
 
     // Brick settings
@@ -42,7 +43,8 @@ const CONFIG = {
         OFFSET_TOP: 100,
         OFFSET_SIDE: 20,
         COLS: 8,
-        ROWS: 6
+        ROWS: 6,
+        FALL_DURATION: 150
     },
 
     // Brick types with their properties (reduced coin drops for difficulty)
@@ -51,6 +53,9 @@ const CONFIG = {
         TOUGH: { hp: 2, color: 0x5c6bc0, points: 25, coinDrop: 1, sprite: 'brick-tough' },
         TOUGH3: { hp: 3, color: 0x7e57c2, points: 40, coinDrop: 2, sprite: 'brick-tough3' },
         EXPLOSIVE: { hp: 1, color: 0xef5350, points: 15, coinDrop: 1, explosive: true, sprite: 'brick-explosive' },
+        BOMB_PURPLE: { hp: 1, color: 0x9c27b0, points: 20, coinDrop: 2, explosive: true, bombType: 'purple', sprite: 'brick-bomb-purple' },
+        BOMB_RED: { hp: 1, color: 0xd32f2f, points: 25, coinDrop: 2, explosive: true, bombType: 'red', sprite: 'brick-bomb-red' },
+        BOMB_GOLD: { hp: 1, color: 0xffa000, points: 30, coinDrop: 5, explosive: true, bombType: 'gold', sprite: 'brick-bomb-gold' },
         GOLD: { hp: 1, color: 0xffd700, points: 50, coinDrop: 3, sprite: 'brick-gold' },
         MYSTERY: { hp: 1, color: 0xe040fb, points: 20, coinDrop: 1, dropsPowerUp: true, sprite: 'brick-mystery' },
         INDESTRUCTIBLE: { hp: Infinity, color: 0x424242, points: 0, coinDrop: 0, sprite: 'brick-indestructible' }
@@ -63,7 +68,16 @@ const CONFIG = {
         COINS_PER_BRICK: 1,
         GEMS_PER_WAVE: 1,
         GEMS_PER_BOSS: 5,
-        BOSS_WAVE_INTERVAL: 5
+        BOSS_WAVE_INTERVAL: 5,
+        TIME_PRESSURE_SECONDS: 60,  // Time before bricks start descending
+        BRICK_DESCENT_SPEED: 40,  // Pixels per second when time pressure activates
+        MERGE_BONUS_MULTIPLIER: 0.5,  // 50% bonus per merge level
+        BOMB_SETTINGS: {
+            DEFAULT_RADIUS: 60,
+            PURPLE_RADIUS: 45,
+            RED_RADIUS: 90,
+            GOLD_BONUS_COINS: 10
+        }
     },
 
     // Power-up types

@@ -1,14 +1,18 @@
 // Brick entity
 class Brick {
-    constructor(scene, x, y, type = 'NORMAL') {
+    constructor(scene, x, y, type = 'NORMAL', col = 0, row = 0, letter = null) {
         this.scene = scene;
         this.type = type;
         this.config = CONFIG.BRICK_TYPES[type] || CONFIG.BRICK_TYPES.NORMAL;
+        this.col = col;
+        this.row = row;
 
         this.hp = this.config.hp;
         this.maxHp = this.config.hp;
         this.points = this.config.points;
         this.coinDrop = this.config.coinDrop;
+        this.mergeLevel = 0;
+        this.letter = letter;
 
         // Check if sprite texture exists
         const spriteKey = this.config.sprite;
@@ -42,6 +46,18 @@ class Brick {
                 color: '#ffffff',
                 stroke: '#000000',
                 strokeThickness: 2
+            }).setOrigin(0.5);
+        }
+
+        // Letter display for ATTACK bricks
+        if (this.letter) {
+            this.letterText = scene.add.text(x, y, this.letter, {
+                fontSize: '16px',
+                fontFamily: 'Arial',
+                fontStyle: 'bold',
+                color: '#ffffff',
+                stroke: '#000000',
+                strokeThickness: 3
             }).setOrigin(0.5);
         }
     }
@@ -93,12 +109,97 @@ class Brick {
         return this.config.explosive === true;
     }
 
+    isColorBomb() {
+        return this.config.bombType !== undefined;
+    }
+
+    getBombType() {
+        return this.config.bombType;
+    }
+
     dropsPowerUp() {
         return this.config.dropsPowerUp === true;
     }
 
     getPosition() {
         return { x: this.sprite.x, y: this.sprite.y };
+    }
+
+    getCol() {
+        return this.col;
+    }
+
+    getRow() {
+        return this.row;
+    }
+
+    setRow(newRow) {
+        this.row = newRow;
+    }
+
+    getMergeLevel() {
+        return this.mergeLevel;
+    }
+
+    setMergeLevel(level) {
+        this.mergeLevel = level;
+        if (level > 0) {
+            const bonusMultiplier = 1 + (level * CONFIG.GAMEPLAY.MERGE_BONUS_MULTIPLIER);
+            this.maxHp = Math.ceil(this.config.hp * bonusMultiplier);
+            this.hp = this.maxHp;
+            this.points = Math.ceil(this.config.points * bonusMultiplier);
+            this.coinDrop = Math.ceil(this.config.coinDrop * bonusMultiplier);
+            if (this.hpText) {
+                this.hpText.setText(this.hp.toString());
+            }
+            this.updateMergeVisual();
+        }
+    }
+
+    isMerged() {
+        return this.mergeLevel > 0;
+    }
+
+    getLetter() {
+        return this.letter;
+    }
+
+    hasLetter() {
+        return this.letter !== null;
+    }
+
+    updateMergeVisual() {
+        if (!this.mergeIndicator && this.mergeLevel > 0) {
+            const indicator = this.scene.add.text(this.sprite.x, this.sprite.y, '+'.repeat(this.mergeLevel), {
+                fontSize: '12px',
+                fontFamily: 'Arial',
+                color: '#ffffff',
+                stroke: '#000000',
+                strokeThickness: 2,
+                fontStyle: 'bold'
+            }).setOrigin(0.5);
+            this.mergeIndicator = indicator;
+        } else if (this.mergeIndicator) {
+            this.mergeIndicator.setText('+'.repeat(this.mergeLevel));
+            this.mergeIndicator.setPosition(this.sprite.x, this.sprite.y);
+        }
+    }
+
+    setPosition(newX, newY) {
+        this.sprite.x = newX;
+        this.sprite.y = newY;
+        if (this.hpText) {
+            this.hpText.x = newX;
+            this.hpText.y = newY;
+        }
+        if (this.mergeIndicator) {
+            this.mergeIndicator.x = newX;
+            this.mergeIndicator.y = newY;
+        }
+        if (this.letterText) {
+            this.letterText.x = newX;
+            this.letterText.y = newY;
+        }
     }
 
     getBody() {
@@ -108,6 +209,12 @@ class Brick {
     destroy() {
         if (this.hpText) {
             this.hpText.destroy();
+        }
+        if (this.mergeIndicator) {
+            this.mergeIndicator.destroy();
+        }
+        if (this.letterText) {
+            this.letterText.destroy();
         }
         this.sprite.destroy();
     }

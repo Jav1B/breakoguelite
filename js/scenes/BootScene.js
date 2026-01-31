@@ -58,6 +58,9 @@ class BootScene extends Phaser.Scene {
         this.load.image('brick-tough', 'assets/sprites/bricks/brick-tough.webp');
         this.load.image('brick-tough3', 'assets/sprites/bricks/brick-tough3.webp');
         this.load.image('brick-explosive', 'assets/sprites/bricks/brick-explosive.webp');
+        this.load.image('brick-bomb-purple', 'assets/sprites/bricks/brick-bomb-purple.webp');
+        this.load.image('brick-bomb-red', 'assets/sprites/bricks/brick-bomb-red.webp');
+        this.load.image('brick-bomb-gold', 'assets/sprites/bricks/brick-bomb-gold.webp');
         this.load.image('brick-gold', 'assets/sprites/bricks/brick-gold.webp');
         this.load.image('brick-mystery', 'assets/sprites/bricks/brick-mystery.webp');
         this.load.image('brick-indestructible', 'assets/sprites/bricks/brick-indestructible.webp');
