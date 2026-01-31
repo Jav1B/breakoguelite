@@ -8,6 +8,7 @@ class BootScene extends Phaser.Scene {
         // Show loading progress
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
+        const t = (key) => localizationManager.t(key);
 
         // Loading bar background
         const bgBar = this.add.rectangle(width / 2, height / 2, 300, 30, 0x222222);
@@ -20,7 +21,7 @@ class BootScene extends Phaser.Scene {
         ).setOrigin(0, 0.5);
 
         // Loading text
-        const loadingText = this.add.text(width / 2, height / 2 - 50, 'Loading...', {
+        const loadingText = this.add.text(width / 2, height / 2 - 50, t('loading'), {
             fontSize: '24px',
             fontFamily: 'Arial',
             color: CONFIG.COLORS.UI_TEXT
@@ -32,7 +33,7 @@ class BootScene extends Phaser.Scene {
         });
 
         this.load.on('complete', () => {
-            loadingText.setText('Ready!');
+            loadingText.setText(t('ready'));
         });
 
         // Load audio assets

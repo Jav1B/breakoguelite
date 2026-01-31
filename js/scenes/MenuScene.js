@@ -8,16 +8,20 @@ class MenuScene extends Phaser.Scene {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
         const saveData = this.game.saveData;
+        const t = (key) => localizationManager.t(key);
+
+        // Language flags (top right)
+        this.createLanguageFlags(width);
 
         // Title
-        this.add.text(width / 2, 100, 'BREAKOUT', {
+        this.add.text(width / 2, 100, t('title'), {
             fontSize: '48px',
             fontFamily: 'Arial',
             fontStyle: 'bold',
             color: CONFIG.COLORS.UI_ACCENT
         }).setOrigin(0.5);
 
-        this.add.text(width / 2, 150, 'ROGUELIKE', {
+        this.add.text(width / 2, 150, t('subtitle'), {
             fontSize: '32px',
             fontFamily: 'Arial',
             color: CONFIG.COLORS.UI_TEXT
@@ -25,18 +29,18 @@ class MenuScene extends Phaser.Scene {
 
         // Stats display
         const statsY = 250;
-        this.add.text(width / 2, statsY, 'STATS', {
+        this.add.text(width / 2, statsY, t('stats'), {
             fontSize: '20px',
             fontFamily: 'Arial',
             color: CONFIG.COLORS.UI_ACCENT
         }).setOrigin(0.5);
 
         const stats = [
-            `Highest Wave: ${saveData.highestWave}`,
-            `Total Runs: ${saveData.totalRuns}`,
-            `Bricks Destroyed: ${saveData.totalBricksDestroyed}`,
-            `Gems: ${saveData.gems}`,
-            `Shards: ${saveData.shards}`
+            `${t('highestWave')}: ${saveData.highestWave}`,
+            `${t('totalRuns')}: ${saveData.totalRuns}`,
+            `${t('bricksDestroyed')}: ${saveData.totalBricksDestroyed}`,
+            `${t('gems')}: ${saveData.gems}`,
+            `${t('shards')}: ${saveData.shards}`
         ];
 
         stats.forEach((stat, i) => {
@@ -48,34 +52,114 @@ class MenuScene extends Phaser.Scene {
         });
 
         // Play button
-        const playBtn = this.createButton(width / 2, 500, 'PLAY', () => {
+        const playBtn = this.createButton(width / 2, 500, t('play'), () => {
             this.scene.start('GameScene');
         });
 
         // Upgrades button
-        const upgradeBtn = this.createButton(width / 2, 570, 'UPGRADES', () => {
+        const upgradeBtn = this.createButton(width / 2, 570, t('upgrades'), () => {
             this.scene.start('UpgradeScene');
         });
 
         // Instructions
-        this.add.text(width / 2, 700, 'Move: Mouse / Touch', {
+        this.add.text(width / 2, 700, t('moveInstruction'), {
             fontSize: '14px',
             fontFamily: 'Arial',
             color: '#888888'
         }).setOrigin(0.5);
 
-        this.add.text(width / 2, 725, 'Launch: Click / Tap', {
+        this.add.text(width / 2, 725, t('launchInstruction'), {
             fontSize: '14px',
             fontFamily: 'Arial',
             color: '#888888'
         }).setOrigin(0.5);
 
         // Version
-        this.add.text(width / 2, height - 20, 'v0.1 MVP', {
+        this.add.text(width / 2, height - 20, t('version'), {
             fontSize: '12px',
             fontFamily: 'Arial',
             color: '#666666'
         }).setOrigin(0.5);
+    }
+
+    createLanguageFlags(width) {
+        const flagY = 30;
+        const flagSpacing = 50;
+        const startX = width - 70;
+        const currentLang = localizationManager.getLanguage();
+
+        // UK Flag
+        const ukFlag = this.createFlag(startX, flagY, 'en', currentLang === 'en');
+
+        // Spain Flag
+        const esFlag = this.createFlag(startX + flagSpacing, flagY, 'es', currentLang === 'es');
+    }
+
+    createFlag(x, y, lang, isActive) {
+        const flagWidth = 36;
+        const flagHeight = 24;
+
+        // Flag container
+        const container = this.add.container(x, y);
+
+        // Draw flag based on language
+        if (lang === 'en') {
+            // UK Flag (simplified Union Jack)
+            const bg = this.add.rectangle(0, 0, flagWidth, flagHeight, 0x012169);
+
+            // White diagonals
+            const diagWhite1 = this.add.rectangle(0, 0, flagWidth * 1.5, 4, 0xffffff).setAngle(33);
+            const diagWhite2 = this.add.rectangle(0, 0, flagWidth * 1.5, 4, 0xffffff).setAngle(-33);
+
+            // Red diagonals
+            const diagRed1 = this.add.rectangle(0, 0, flagWidth * 1.5, 2, 0xc8102e).setAngle(33);
+            const diagRed2 = this.add.rectangle(0, 0, flagWidth * 1.5, 2, 0xc8102e).setAngle(-33);
+
+            // White cross
+            const crossWhiteH = this.add.rectangle(0, 0, flagWidth, 6, 0xffffff);
+            const crossWhiteV = this.add.rectangle(0, 0, 6, flagHeight, 0xffffff);
+
+            // Red cross
+            const crossRedH = this.add.rectangle(0, 0, flagWidth, 4, 0xc8102e);
+            const crossRedV = this.add.rectangle(0, 0, 4, flagHeight, 0xc8102e);
+
+            container.add([bg, diagWhite1, diagWhite2, diagRed1, diagRed2, crossWhiteH, crossWhiteV, crossRedH, crossRedV]);
+        } else if (lang === 'es') {
+            // Spain Flag
+            const redTop = this.add.rectangle(0, -flagHeight/3, flagWidth, flagHeight/3, 0xc60b1e);
+            const yellow = this.add.rectangle(0, 0, flagWidth, flagHeight/3, 0xffc400);
+            const redBottom = this.add.rectangle(0, flagHeight/3, flagWidth, flagHeight/3, 0xc60b1e);
+
+            container.add([redTop, yellow, redBottom]);
+        }
+
+        // Border
+        const border = this.add.rectangle(0, 0, flagWidth, flagHeight)
+            .setStrokeStyle(isActive ? 3 : 1, isActive ? 0x4fc3f7 : 0x666666)
+            .setFillStyle();
+        container.add(border);
+
+        // Make interactive
+        const hitArea = this.add.rectangle(0, 0, flagWidth, flagHeight, 0x000000, 0)
+            .setInteractive({ useHandCursor: true });
+        container.add(hitArea);
+
+        hitArea.on('pointerover', () => {
+            if (!isActive) border.setStrokeStyle(2, 0x888888);
+        });
+
+        hitArea.on('pointerout', () => {
+            if (!isActive) border.setStrokeStyle(1, 0x666666);
+        });
+
+        hitArea.on('pointerdown', () => {
+            if (localizationManager.getLanguage() !== lang) {
+                localizationManager.setLanguage(lang);
+                this.scene.restart();
+            }
+        });
+
+        return container;
     }
 
     createButton(x, y, text, callback) {

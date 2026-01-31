@@ -87,37 +87,38 @@ class GameScene extends Phaser.Scene {
 
     createUI() {
         const padding = 15;
+        const t = (key) => localizationManager.t(key);
 
         // Score
-        this.scoreText = this.add.text(padding, padding, 'Score: 0', {
+        this.scoreText = this.add.text(padding, padding, `${t('score')}: 0`, {
             fontSize: '18px',
             fontFamily: 'Arial',
             color: CONFIG.COLORS.UI_TEXT
         });
 
         // Wave
-        this.waveText = this.add.text(CONFIG.GAME_WIDTH / 2, padding, 'Wave: 1', {
+        this.waveText = this.add.text(CONFIG.GAME_WIDTH / 2, padding, `${t('wave')}: 1`, {
             fontSize: '18px',
             fontFamily: 'Arial',
             color: CONFIG.COLORS.UI_ACCENT
         }).setOrigin(0.5, 0);
 
         // Lives
-        this.livesText = this.add.text(CONFIG.GAME_WIDTH - padding, padding, `Lives: ${this.lives}`, {
+        this.livesText = this.add.text(CONFIG.GAME_WIDTH - padding, padding, `${t('lives')}: ${this.lives}`, {
             fontSize: '18px',
             fontFamily: 'Arial',
             color: CONFIG.COLORS.UI_TEXT
         }).setOrigin(1, 0);
 
         // Coins
-        this.coinsText = this.add.text(padding, padding + 25, 'Coins: 0', {
+        this.coinsText = this.add.text(padding, padding + 25, `${t('coins')}: 0`, {
             fontSize: '16px',
             fontFamily: 'Arial',
             color: '#ffd700'
         });
 
         // Gems (small display)
-        this.gemsText = this.add.text(CONFIG.GAME_WIDTH - padding, padding + 25, `Gems: ${this.currencyManager.getGems()}`, {
+        this.gemsText = this.add.text(CONFIG.GAME_WIDTH - padding, padding + 25, `${t('gems')}: ${this.currencyManager.getGems()}`, {
             fontSize: '16px',
             fontFamily: 'Arial',
             color: '#e040fb'
@@ -206,7 +207,8 @@ class GameScene extends Phaser.Scene {
 
     startNextWave() {
         const wave = this.waveManager.nextWave();
-        this.waveText.setText(`Wave: ${wave}`);
+        const t = (key) => localizationManager.t(key);
+        this.waveText.setText(`${t('wave')}: ${wave}`);
 
         // Generate and create bricks
         const layout = this.waveManager.generateLayout();
@@ -266,10 +268,11 @@ class GameScene extends Phaser.Scene {
 
     onBrickDestroyed(brick, isCrit, fromExplosion = false) {
         const pos = brick.getPosition();
+        const t = (key) => localizationManager.t(key);
 
         // Award points
         this.score += brick.points * (isCrit ? 2 : 1);
-        this.scoreText.setText(`Score: ${this.score}`);
+        this.scoreText.setText(`${t('score')}: ${this.score}`);
 
         // Drop coins
         const coinMult = this.upgradeManager.getCoinMultiplier();
@@ -363,8 +366,9 @@ class GameScene extends Phaser.Scene {
         if (!coin.collect()) return;
 
         const value = coin.getValue();
+        const t = (key) => localizationManager.t(key);
         this.currencyManager.addCoins(value);
-        this.coinsText.setText(`Coins: ${this.currencyManager.getCoins()}`);
+        this.coinsText.setText(`${t('coins')}: ${this.currencyManager.getCoins()}`);
 
         // Play coin sound based on value (ascending for better coins)
         if (value >= 5) {
@@ -435,7 +439,20 @@ class GameScene extends Phaser.Scene {
         }
 
         // Show power-up text
-        this.showPowerUpText(CONFIG.POWERUP_TYPES[type].name);
+        this.showPowerUpText(this.getPowerUpName(type));
+    }
+
+    getPowerUpName(type) {
+        const t = (key) => localizationManager.t(key);
+        const names = {
+            'MULTIBALL': t('multiBall'),
+            'WIDE_PADDLE': t('widePaddle'),
+            'FIREBALL': t('fireball'),
+            'SLOW': t('slowMotion'),
+            'SHIELD': t('shield'),
+            'MAGNET': t('magnet')
+        };
+        return names[type] || type;
     }
 
     onPowerUpExpired(type) {
@@ -541,19 +558,21 @@ class GameScene extends Phaser.Scene {
             ball.destroy();
         }
 
+        const t = (key) => localizationManager.t(key);
+
         // Check if any balls remain
         if (this.balls.length === 0) {
             // Check for shield
             if (this.upgradeManager.tempUpgrades.shield) {
                 this.upgradeManager.tempUpgrades.shield = false;
                 this.spawnBall();
-                this.showPowerUpText('Shield Used!');
+                this.showPowerUpText(t('shieldUsed'));
                 return;
             }
 
             // Lose a life
             this.lives--;
-            this.livesText.setText(`Lives: ${this.lives}`);
+            this.livesText.setText(`${t('lives')}: ${this.lives}`);
 
             this.cameras.main.shake(200, 0.01);
 
@@ -570,8 +589,9 @@ class GameScene extends Phaser.Scene {
         // Award gems
         const gemMult = this.upgradeManager.getGemMultiplier();
         const gems = Math.floor(this.waveManager.getGemsForWave() * gemMult);
+        const t = (key) => localizationManager.t(key);
         this.currencyManager.addGems(gems);
-        this.gemsText.setText(`Gems: ${this.currencyManager.getGems()}`);
+        this.gemsText.setText(`${t('gems')}: ${this.currencyManager.getGems()}`);
 
         // Update high wave
         if (this.waveManager.getCurrentWave() > this.saveData.highestWave) {
@@ -597,7 +617,8 @@ class GameScene extends Phaser.Scene {
     }
 
     showWaveComplete() {
-        const txt = this.add.text(CONFIG.GAME_WIDTH / 2, CONFIG.GAME_HEIGHT / 2, 'WAVE COMPLETE!', {
+        const t = (key) => localizationManager.t(key);
+        const txt = this.add.text(CONFIG.GAME_WIDTH / 2, CONFIG.GAME_HEIGHT / 2, t('waveComplete'), {
             fontSize: '32px',
             fontFamily: 'Arial',
             fontStyle: 'bold',
@@ -616,6 +637,7 @@ class GameScene extends Phaser.Scene {
 
     continueToNextWave() {
         this.scene.resume();
+        const t = (key) => localizationManager.t(key);
 
         // Reset ball
         this.balls.forEach(b => b.destroy());
@@ -632,7 +654,7 @@ class GameScene extends Phaser.Scene {
         this.startNextWave();
 
         // Update UI
-        this.coinsText.setText(`Coins: ${this.currencyManager.getCoins()}`);
+        this.coinsText.setText(`${t('coins')}: ${this.currencyManager.getCoins()}`);
     }
 
     gameOver() {

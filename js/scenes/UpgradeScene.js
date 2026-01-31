@@ -8,9 +8,10 @@ class UpgradeScene extends Phaser.Scene {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
         this.saveData = this.game.saveData;
+        const t = (key) => localizationManager.t(key);
 
         // Title
-        this.add.text(width / 2, 50, 'UPGRADES', {
+        this.add.text(width / 2, 50, t('upgrades'), {
             fontSize: '36px',
             fontFamily: 'Arial',
             fontStyle: 'bold',
@@ -18,7 +19,7 @@ class UpgradeScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Gems display
-        this.gemsText = this.add.text(width / 2, 90, `Gems: ${this.saveData.gems}`, {
+        this.gemsText = this.add.text(width / 2, 90, `${t('gems')}: ${this.saveData.gems}`, {
             fontSize: '24px',
             fontFamily: 'Arial',
             color: '#e040fb'
@@ -26,13 +27,13 @@ class UpgradeScene extends Phaser.Scene {
 
         // Upgrades list
         const upgrades = [
-            { key: 'startingCoins', name: 'Starting Coins', desc: '+5 coins per run', costKey: 'STARTING_COINS' },
-            { key: 'paddleSize', name: 'Paddle Size', desc: '+5% base width', costKey: 'PADDLE_SIZE' },
-            { key: 'ballSpeed', name: 'Ball Control', desc: '-3% max speed', costKey: 'BALL_SPEED' },
-            { key: 'coinMult', name: 'Coin Bonus', desc: '+10% coin drops', costKey: 'COIN_MULT' },
-            { key: 'extraLives', name: 'Extra Lives', desc: '+1 starting life', costKey: 'EXTRA_LIVES' },
-            { key: 'critChance', name: 'Critical Hit', desc: '+1% crit chance', costKey: 'CRIT_CHANCE' },
-            { key: 'shopDiscount', name: 'Shop Discount', desc: '-5% shop prices', costKey: 'SHOP_DISCOUNT' }
+            { key: 'startingCoins', name: t('startingCoins'), desc: t('startingCoinsDesc'), costKey: 'STARTING_COINS' },
+            { key: 'paddleSize', name: t('paddleSize'), desc: t('paddleSizeDesc'), costKey: 'PADDLE_SIZE' },
+            { key: 'ballSpeed', name: t('ballControl'), desc: t('ballControlDesc'), costKey: 'BALL_SPEED' },
+            { key: 'coinMult', name: t('coinBonus'), desc: t('coinBonusDesc'), costKey: 'COIN_MULT' },
+            { key: 'extraLives', name: t('extraLives'), desc: t('extraLivesDesc'), costKey: 'EXTRA_LIVES' },
+            { key: 'critChance', name: t('criticalHit'), desc: t('criticalHitDesc'), costKey: 'CRIT_CHANCE' },
+            { key: 'shopDiscount', name: t('shopDiscount'), desc: t('shopDiscountDesc'), costKey: 'SHOP_DISCOUNT' }
         ];
 
         const startY = 150;
@@ -47,7 +48,7 @@ class UpgradeScene extends Phaser.Scene {
         });
 
         // Back button
-        this.createButton(width / 2, height - 60, 'BACK', () => {
+        this.createButton(width / 2, height - 60, t('back'), () => {
             this.scene.start('MenuScene');
         });
     }
@@ -59,6 +60,7 @@ class UpgradeScene extends Phaser.Scene {
         const isMaxed = currentLevel >= maxLevel;
         const nextCost = isMaxed ? null : costs[currentLevel];
         const canAfford = !isMaxed && this.saveData.gems >= nextCost;
+        const t = (key) => localizationManager.t(key);
 
         // Background
         const bg = this.add.rectangle(x, y, 340, 60, canAfford ? 0x333333 : 0x222222);
@@ -86,7 +88,7 @@ class UpgradeScene extends Phaser.Scene {
         }).setOrigin(0, 0.5);
 
         // Level indicator
-        let levelText = `Lv ${currentLevel}/${maxLevel}`;
+        let levelText = `${t('level')} ${currentLevel}/${maxLevel}`;
         this.add.text(x + 60, y - 8, levelText, {
             fontSize: '14px',
             fontFamily: 'Arial',
@@ -94,7 +96,7 @@ class UpgradeScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Cost or MAX
-        const costText = isMaxed ? 'MAX' : nextCost.toString();
+        const costText = isMaxed ? t('max') : nextCost.toString();
         const costColor = isMaxed ? '#4fc3f7' : (canAfford ? '#e040fb' : '#666666');
         this.add.text(x + 130, y + 8, costText, {
             fontSize: '16px',

@@ -15,9 +15,10 @@ class GameOverScene extends Phaser.Scene {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
         const saveData = this.game.saveData;
+        const t = (key) => localizationManager.t(key);
 
         // Title
-        this.add.text(width / 2, 100, 'GAME OVER', {
+        this.add.text(width / 2, 100, t('gameOver'), {
             fontSize: '42px',
             fontFamily: 'Arial',
             fontStyle: 'bold',
@@ -26,17 +27,17 @@ class GameOverScene extends Phaser.Scene {
 
         // Run summary
         const summaryY = 200;
-        this.add.text(width / 2, summaryY, 'RUN SUMMARY', {
+        this.add.text(width / 2, summaryY, t('runSummary'), {
             fontSize: '20px',
             fontFamily: 'Arial',
             color: CONFIG.COLORS.UI_ACCENT
         }).setOrigin(0.5);
 
         const stats = [
-            { label: 'Score', value: this.finalScore.toLocaleString() },
-            { label: 'Wave Reached', value: this.finalWave },
-            { label: 'Coins Collected', value: this.finalCoins },
-            { label: 'Gems Earned', value: `+${this.finalGems}` }
+            { label: t('score'), value: this.finalScore.toLocaleString() },
+            { label: t('waveReached'), value: this.finalWave },
+            { label: t('coinsCollected'), value: this.finalCoins },
+            { label: t('gemsEarned'), value: `+${this.finalGems}` }
         ];
 
         stats.forEach((stat, i) => {
@@ -58,17 +59,17 @@ class GameOverScene extends Phaser.Scene {
 
         // Lifetime stats
         const lifetimeY = 430;
-        this.add.text(width / 2, lifetimeY, 'LIFETIME STATS', {
+        this.add.text(width / 2, lifetimeY, t('lifetimeStats'), {
             fontSize: '18px',
             fontFamily: 'Arial',
             color: '#666666'
         }).setOrigin(0.5);
 
         const lifetimeStats = [
-            { label: 'Total Runs', value: saveData.totalRuns },
-            { label: 'Highest Wave', value: saveData.highestWave },
-            { label: 'Total Gems', value: saveData.gems },
-            { label: 'Bricks Destroyed', value: saveData.totalBricksDestroyed.toLocaleString() }
+            { label: t('totalRuns'), value: saveData.totalRuns },
+            { label: t('highestWave'), value: saveData.highestWave },
+            { label: t('totalGems'), value: saveData.gems },
+            { label: t('bricksDestroyed'), value: saveData.totalBricksDestroyed.toLocaleString() }
         ];
 
         lifetimeStats.forEach((stat, i) => {
@@ -88,15 +89,15 @@ class GameOverScene extends Phaser.Scene {
         });
 
         // Buttons
-        this.createButton(width / 2, 620, 'PLAY AGAIN', () => {
+        this.createButton(width / 2, 620, t('playAgain'), () => {
             this.scene.start('GameScene');
         });
 
-        this.createButton(width / 2, 690, 'UPGRADES', () => {
+        this.createButton(width / 2, 690, t('upgrades'), () => {
             this.scene.start('UpgradeScene');
         });
 
-        this.createButton(width / 2, 760, 'MAIN MENU', () => {
+        this.createButton(width / 2, 760, t('mainMenu'), () => {
             this.scene.start('MenuScene');
         });
     }

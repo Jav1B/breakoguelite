@@ -14,12 +14,13 @@ class ShopScene extends Phaser.Scene {
     create() {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
+        const t = (key) => localizationManager.t(key);
 
         // Semi-transparent background
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8);
 
         // Title
-        this.add.text(width / 2, 80, 'SHOP', {
+        this.add.text(width / 2, 80, t('shop'), {
             fontSize: '36px',
             fontFamily: 'Arial',
             fontStyle: 'bold',
@@ -27,14 +28,14 @@ class ShopScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Wave info
-        this.add.text(width / 2, 120, `Preparing for Wave ${this.waveManager.getCurrentWave() + 1}`, {
+        this.add.text(width / 2, 120, `${t('preparingForWave')} ${this.waveManager.getCurrentWave() + 1}`, {
             fontSize: '18px',
             fontFamily: 'Arial',
             color: '#888888'
         }).setOrigin(0.5);
 
         // Coins display
-        this.coinsText = this.add.text(width / 2, 160, `Coins: ${this.currencyManager.getCoins()}`, {
+        this.coinsText = this.add.text(width / 2, 160, `${t('coins')}: ${this.currencyManager.getCoins()}`, {
             fontSize: '24px',
             fontFamily: 'Arial',
             color: '#ffd700'
@@ -42,12 +43,12 @@ class ShopScene extends Phaser.Scene {
 
         // Shop items
         const items = [
-            { key: 'MULTIBALL', name: 'Multi-Ball', desc: '+1 Ball', price: CONFIG.SHOP_PRICES.MULTIBALL },
-            { key: 'WIDE_PADDLE', name: 'Wide Paddle', desc: '+40% Width', price: CONFIG.SHOP_PRICES.WIDE_PADDLE },
-            { key: 'FIREBALL', name: 'Fireball', desc: '3x Damage', price: CONFIG.SHOP_PRICES.FIREBALL },
-            { key: 'SLOW', name: 'Slow Motion', desc: '-40% Speed', price: CONFIG.SHOP_PRICES.SLOW },
-            { key: 'SHIELD', name: 'Shield', desc: 'Save 1 Ball', price: CONFIG.SHOP_PRICES.SHIELD },
-            { key: 'MAGNET', name: 'Magnet', desc: 'Attract Coins', price: CONFIG.SHOP_PRICES.MAGNET }
+            { key: 'MULTIBALL', name: t('multiBall'), desc: t('multiBallDesc'), price: CONFIG.SHOP_PRICES.MULTIBALL },
+            { key: 'WIDE_PADDLE', name: t('widePaddle'), desc: t('widePaddleDesc'), price: CONFIG.SHOP_PRICES.WIDE_PADDLE },
+            { key: 'FIREBALL', name: t('fireball'), desc: t('fireballDesc'), price: CONFIG.SHOP_PRICES.FIREBALL },
+            { key: 'SLOW', name: t('slowMotion'), desc: t('slowMotionDesc'), price: CONFIG.SHOP_PRICES.SLOW },
+            { key: 'SHIELD', name: t('shield'), desc: t('shieldDesc'), price: CONFIG.SHOP_PRICES.SHIELD },
+            { key: 'MAGNET', name: t('magnet'), desc: t('magnetDesc'), price: CONFIG.SHOP_PRICES.MAGNET }
         ];
 
         // Apply shop discount
@@ -64,7 +65,7 @@ class ShopScene extends Phaser.Scene {
         });
 
         // Continue button
-        this.createButton(width / 2, height - 80, 'CONTINUE', () => {
+        this.createButton(width / 2, height - 80, t('continue'), () => {
             this.scene.stop();
             this.gameScene.continueToNextWave();
         });
@@ -117,7 +118,8 @@ class ShopScene extends Phaser.Scene {
             this.gameScene.activatePowerUp(key);
 
             // Update display
-            this.coinsText.setText(`Coins: ${this.currencyManager.getCoins()}`);
+            const t = (key) => localizationManager.t(key);
+            this.coinsText.setText(`${t('coins')}: ${this.currencyManager.getCoins()}`);
 
             // Visual feedback
             button.setFillStyle(0x4fc3f7);
