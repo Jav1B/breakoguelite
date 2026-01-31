@@ -44,8 +44,8 @@ class WaveManager {
             }
         }
 
-        // Add some gaps for variety
-        const gapCount = Math.floor(layout.length * 0.1);
+        // Add some gaps for variety (reduced from 10% to 5%)
+        const gapCount = Math.floor(layout.length * 0.05);
         for (let i = 0; i < gapCount; i++) {
             const idx = Math.floor(Math.random() * layout.length);
             layout.splice(idx, 1);
@@ -61,13 +61,16 @@ class WaveManager {
         // Top rows tend to be tougher
         const isTopHalf = row < totalRows / 2;
 
-        // Wave-based probability adjustments
-        const toughChance = Math.min(0.1 + wave * 0.02, 0.4);
-        const tough3Chance = wave >= 5 ? Math.min(0.05 + (wave - 5) * 0.02, 0.2) : 0;
+        // Wave-based probability adjustments (more aggressive scaling)
+        // TOUGH: Starts at 15% on wave 1 (was 10% + 2%/wave)
+        const toughChance = Math.min(0.15 + wave * 0.03, 0.5);
+        // TOUGH3: Starts wave 3 (was wave 5)
+        const tough3Chance = wave >= 3 ? Math.min(0.05 + (wave - 3) * 0.03, 0.25) : 0;
         const explosiveChance = wave >= 3 ? 0.08 : 0;
         const goldChance = 0.05;
         const mysteryChance = 0.05;
-        const indestructibleChance = wave >= 4 && isTopHalf ? 0.05 : 0;
+        // INDESTRUCTIBLE: Starts wave 2 (was wave 4)
+        const indestructibleChance = wave >= 2 && isTopHalf ? 0.05 + (wave - 2) * 0.01 : 0;
 
         let cumulative = 0;
 

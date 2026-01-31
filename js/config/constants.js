@@ -18,7 +18,7 @@ const CONFIG = {
 
     // Paddle settings
     PADDLE: {
-        WIDTH: 100,
+        WIDTH: 80,  // Smaller = harder (upgrades restore to 100+)
         HEIGHT: 20,
         Y_OFFSET: 60,  // Distance from bottom
         SPEED: 800,
@@ -45,20 +45,20 @@ const CONFIG = {
         ROWS: 6
     },
 
-    // Brick types with their properties
+    // Brick types with their properties (reduced coin drops for difficulty)
     BRICK_TYPES: {
         NORMAL: { hp: 1, color: 0x26a69a, points: 10, coinDrop: 1 },
-        TOUGH: { hp: 2, color: 0x5c6bc0, points: 25, coinDrop: 2 },
-        TOUGH3: { hp: 3, color: 0x7e57c2, points: 40, coinDrop: 3 },
+        TOUGH: { hp: 2, color: 0x5c6bc0, points: 25, coinDrop: 1 },
+        TOUGH3: { hp: 3, color: 0x7e57c2, points: 40, coinDrop: 2 },
         EXPLOSIVE: { hp: 1, color: 0xef5350, points: 15, coinDrop: 1, explosive: true },
-        GOLD: { hp: 1, color: 0xffd700, points: 50, coinDrop: 5 },
+        GOLD: { hp: 1, color: 0xffd700, points: 50, coinDrop: 3 },
         MYSTERY: { hp: 1, color: 0xe040fb, points: 20, coinDrop: 1, dropsPowerUp: true },
         INDESTRUCTIBLE: { hp: Infinity, color: 0x424242, points: 0, coinDrop: 0 }
     },
 
     // Gameplay settings
     GAMEPLAY: {
-        STARTING_LIVES: 3,
+        STARTING_LIVES: 1,  // Hard start - upgrades are essential
         STARTING_COINS: 0,
         COINS_PER_BRICK: 1,
         GEMS_PER_WAVE: 1,

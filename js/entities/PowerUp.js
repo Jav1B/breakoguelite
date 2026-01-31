@@ -83,11 +83,15 @@ class CoinDrop {
         this.value = value;
         this.collected = false;
 
-        // Create coin as a small circle
-        this.sprite = scene.add.circle(x, y, 8, CONFIG.COLORS.COIN);
+        // Size and color based on value
+        const coinConfig = this.getCoinConfig(value);
+
+        // Create coin as a circle with value-based size
+        this.sprite = scene.add.circle(x, y, coinConfig.radius, coinConfig.color);
         scene.physics.add.existing(this.sprite, false);
 
-        this.sprite.body.setCircle(8);
+        this.sprite.body.setCircle(coinConfig.radius);
+        this.radius = coinConfig.radius;
 
         // Initial burst upward and sideways
         this.sprite.body.setVelocity(
@@ -101,12 +105,68 @@ class CoinDrop {
 
         this.sprite.parentClass = this;
 
-        // Sparkle effect
-        this.sprite.setStrokeStyle(2, 0xffffff, 0.7);
+        // Sparkle effect with value-based stroke
+        this.sprite.setStrokeStyle(coinConfig.stroke, 0xffffff, 0.8);
+
+        // Add value text for coins worth 2+
+        if (value >= 2) {
+            this.valueText = scene.add.text(x, y, value.toString(), {
+                fontSize: coinConfig.fontSize,
+                fontFamily: 'Arial',
+                fontStyle: 'bold',
+                color: '#000000'
+            }).setOrigin(0.5);
+        }
+
+        // Pulsing effect for high-value coins
+        if (value >= 3) {
+            scene.tweens.add({
+                targets: this.sprite,
+                scaleX: 1.15,
+                scaleY: 1.15,
+                duration: 200,
+                yoyo: true,
+                repeat: -1
+            });
+        }
+    }
+
+    getCoinConfig(value) {
+        if (value >= 5) {
+            // Large gold coin with sparkle
+            return { radius: 14, color: 0xffd700, stroke: 3, fontSize: '14px' };
+        } else if (value >= 3) {
+            // Medium silver-gold coin
+            return { radius: 12, color: 0xffec8b, stroke: 2, fontSize: '12px' };
+        } else if (value >= 2) {
+            // Small bronze coin
+            return { radius: 10, color: 0xdaa520, stroke: 2, fontSize: '10px' };
+        } else {
+            // Basic copper coin
+            return { radius: 8, color: 0xcd853f, stroke: 1, fontSize: '8px' };
+        }
     }
 
     update() {
         if (!this.sprite || !this.sprite.active) return false;
+
+        // Bounce off side walls manually (so coins can still fall off bottom)
+        const x = this.sprite.x;
+        const vel = this.sprite.body.velocity;
+        if (x - this.radius < 0) {
+            this.sprite.x = this.radius;
+            vel.x = Math.abs(vel.x) * 0.7;
+        } else if (x + this.radius > CONFIG.GAME_WIDTH) {
+            this.sprite.x = CONFIG.GAME_WIDTH - this.radius;
+            vel.x = -Math.abs(vel.x) * 0.7;
+        }
+
+        // Update value text position to follow coin
+        if (this.valueText) {
+            this.valueText.x = this.sprite.x;
+            this.valueText.y = this.sprite.y;
+        }
+
         if (this.sprite.y > CONFIG.GAME_HEIGHT + 20) {
             this.destroy();
             return false;
@@ -123,9 +183,14 @@ class CoinDrop {
             this.sprite.body.enable = false;
         }
 
-        // Animate and destroy
+        // Animate coin and text together
+        const targets = [this.sprite];
+        if (this.valueText) {
+            targets.push(this.valueText);
+        }
+
         this.scene.tweens.add({
-            targets: this.sprite,
+            targets: targets,
             scaleX: 1.5,
             scaleY: 1.5,
             alpha: 0,
@@ -151,6 +216,10 @@ class CoinDrop {
     }
 
     destroy() {
+        if (this.valueText) {
+            this.valueText.destroy();
+            this.valueText = null;
+        }
         if (this.sprite && this.sprite.active) {
             this.sprite.destroy();
         }

@@ -23,6 +23,11 @@ class Ball {
         this.isFireball = false;
         this.baseSpeed = CONFIG.BALL.BASE_SPEED;
 
+        // Wave and rally scaling
+        this.waveSpeedMultiplier = 1.0;  // 8% increase per wave
+        this.rallyHits = 0;              // Paddle hits since last ball loss
+        this.rallyAcceleration = 0.02;   // 2% speed increase per paddle hit
+
         // Trail effect (simple)
         this.trail = [];
     }
@@ -58,9 +63,9 @@ class Ball {
 
         this.isLaunched = true;
 
-        // Launch at an angle
+        // Launch at an angle with wave-scaled speed
         const angle = Phaser.Math.Between(-60, 60) * (Math.PI / 180);
-        const speed = this.baseSpeed;
+        const speed = this.getEffectiveSpeed();
 
         this.sprite.body.setVelocity(
             Math.sin(angle) * speed,
@@ -68,7 +73,28 @@ class Ball {
         );
     }
 
+    // Calculate effective speed based on wave and rally
+    getEffectiveSpeed() {
+        const waveSpeed = this.baseSpeed * this.waveSpeedMultiplier;
+        const rallyBonus = 1 + (this.rallyHits * this.rallyAcceleration);
+        return Math.min(waveSpeed * rallyBonus, CONFIG.BALL.MAX_SPEED);
+    }
+
+    // Set wave multiplier (called at wave start)
+    setWave(wave) {
+        // 8% increase per wave: wave 1 = 1.0, wave 2 = 1.08, wave 5 = 1.36, wave 10 = 2.0
+        this.waveSpeedMultiplier = Math.pow(1.08, wave - 1);
+    }
+
+    // Reset rally counter (called when spawning new ball after loss)
+    resetRally() {
+        this.rallyHits = 0;
+    }
+
     onPaddleHit(paddle) {
+        // Increment rally counter for acceleration
+        this.rallyHits++;
+
         // Calculate hit position relative to paddle center (-1 to 1)
         const hitPos = (this.sprite.x - paddle.getX()) / (paddle.currentWidth / 2);
 
@@ -76,10 +102,13 @@ class Ball {
         const maxAngle = 60 * (Math.PI / 180);
         const angle = hitPos * maxAngle;
 
-        const speed = this.sprite.body.velocity.length();
+        // Apply rally acceleration (2% faster per hit)
+        const currentSpeed = this.sprite.body.velocity.length();
+        const newSpeed = Math.min(currentSpeed * (1 + this.rallyAcceleration), CONFIG.BALL.MAX_SPEED);
+
         this.sprite.body.setVelocity(
-            Math.sin(angle) * speed,
-            -Math.abs(Math.cos(angle) * speed)
+            Math.sin(angle) * newSpeed,
+            -Math.abs(Math.cos(angle) * newSpeed)
         );
     }
 

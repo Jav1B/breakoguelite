@@ -57,6 +57,13 @@ class GameScene extends Phaser.Scene {
         const ball = new Ball(this, this.paddle.getX(), this.paddle.getY() - 30);
         this.balls.push(ball);
 
+        // Apply wave speed scaling and reset rally
+        const currentWave = this.waveManager.getCurrentWave();
+        if (currentWave > 0) {
+            ball.setWave(currentWave);
+        }
+        ball.resetRally();
+
         // Add collision with paddle
         this.physics.add.collider(ball.getBody(), this.paddle.getBody(), (ballSprite, paddleSprite) => {
             ball.onPaddleHit(this.paddle);
@@ -204,6 +211,9 @@ class GameScene extends Phaser.Scene {
         // Generate and create bricks
         const layout = this.waveManager.generateLayout();
         this.createBricks(layout);
+
+        // Update wave speed scaling for all existing balls
+        this.balls.forEach(ball => ball.setWave(wave));
 
         // Reset ball if needed
         if (this.balls.length === 0) {
@@ -448,9 +458,15 @@ class GameScene extends Phaser.Scene {
         const newBall = new Ball(this, existingBall.sprite.x, existingBall.sprite.y);
         newBall.isLaunched = true;
 
-        // Launch in different direction
+        // Inherit wave speed from current wave
+        const currentWave = this.waveManager.getCurrentWave();
+        if (currentWave > 0) {
+            newBall.setWave(currentWave);
+        }
+
+        // Launch in different direction using wave-scaled speed
         const angle = Phaser.Math.Between(-45, 45) * (Math.PI / 180);
-        const speed = CONFIG.BALL.BASE_SPEED;
+        const speed = newBall.getEffectiveSpeed();
         newBall.sprite.body.setVelocity(
             Math.sin(angle) * speed,
             -Math.abs(Math.cos(angle) * speed)
