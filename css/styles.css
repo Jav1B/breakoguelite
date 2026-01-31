@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #1a1a2e;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#game-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#game-container canvas {
+    display: block;
+}
+
+/* Prevent pull-to-refresh on mobile */
+body {
+    overscroll-behavior: none;
+}
+
+/* Disable text selection */
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Landscape warning overlay */
+#rotate-warning {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a2e;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.rotate-content {
+    text-align: center;
+    color: #ffffff;
+    padding: 20px;
+}
+
+.rotate-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: rotate-phone 1.5s ease-in-out infinite;
+}
+
+.rotate-content p {
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    color: #4fc3f7;
+}
+
+@keyframes rotate-phone {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-30deg); }
+    75% { transform: rotate(30deg); }
+}
+
+/* Show warning only on mobile devices in landscape */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+    #rotate-warning {
+        display: flex;
+    }
+
+    #game-container {
+        display: none;
+    }
+}

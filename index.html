@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="screen-orientation" content="portrait">
+    <title>Breakout Roguelike</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="game-container"></div>
+
+    <!-- Landscape warning overlay -->
+    <div id="rotate-warning">
+        <div class="rotate-content">
+            <div class="rotate-icon">&#x1F4F1;</div>
+            <p>Please rotate your device to portrait mode</p>
+        </div>
+    </div>
+
+    <!-- Phaser 3 from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+
+    <!-- Game Scripts -->
+    <script src="js/config/constants.js"></script>
+    <script src="js/managers/SaveManager.js"></script>
+    <script src="js/managers/CurrencyManager.js"></script>
+    <script src="js/managers/UpgradeManager.js"></script>
+    <script src="js/managers/WaveManager.js"></script>
+    <script src="js/entities/Paddle.js"></script>
+    <script src="js/entities/Ball.js"></script>
+    <script src="js/entities/Brick.js"></script>
+    <script src="js/entities/PowerUp.js"></script>
+    <script src="js/scenes/BootScene.js"></script>
+    <script src="js/scenes/MenuScene.js"></script>
+    <script src="js/scenes/GameScene.js"></script>
+    <script src="js/scenes/ShopScene.js"></script>
+    <script src="js/scenes/UpgradeScene.js"></script>
+    <script src="js/scenes/GameOverScene.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
