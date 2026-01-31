@@ -82,6 +82,18 @@ body {
     }
 
     #game-container {
-        display: none;
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
+
+@media screen and (orientation: portrait), screen and (min-width: 901px) {
+    #rotate-warning {
+        display: none !important;
+    }
+
+    #game-container {
+        visibility: visible;
+        pointer-events: auto;
     }
 }

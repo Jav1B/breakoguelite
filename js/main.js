@@ -37,3 +37,26 @@ window.addEventListener('resize', () => {
         game.scale.refresh();
     }
 });
+
+// Handle orientation changes on mobile
+window.addEventListener('orientationchange', () => {
+    // Wait for the orientation change to complete
+    setTimeout(() => {
+        if (game.scale) {
+            game.scale.refresh();
+        }
+        // Force a resize event as well
+        window.dispatchEvent(new Event('resize'));
+    }, 200);
+});
+
+// Also use screen orientation API if available
+if (screen.orientation) {
+    screen.orientation.addEventListener('change', () => {
+        setTimeout(() => {
+            if (game.scale) {
+                game.scale.refresh();
+            }
+        }, 200);
+    });
+}
