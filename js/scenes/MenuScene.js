@@ -207,7 +207,7 @@ class MenuScene extends Phaser.Scene {
     createLanguageFlags(width) {
         const flagY = 30;
         const flagSpacing = 50;
-        const startX = width - 70;
+        const startX = width - 90;
         const currentLang = localizationManager.getLanguage();
 
         // UK Flag

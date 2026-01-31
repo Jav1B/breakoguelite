@@ -24,7 +24,12 @@ class Ball {
         // State
         this.isLaunched = false;
         this.isFireball = false;
-        this.baseSpeed = CONFIG.BALL.BASE_SPEED;
+
+        // Apply ball speed reduction from upgrades (makes ball easier to control)
+        const speedReduction = scene.upgradeManager ? scene.upgradeManager.getBallSpeedReduction() : 0;
+        this.speedMultiplier = 1 - speedReduction;
+        this.baseSpeed = CONFIG.BALL.BASE_SPEED * this.speedMultiplier;
+        this.maxSpeed = CONFIG.BALL.MAX_SPEED * this.speedMultiplier;
 
         // Wave and rally scaling
         this.waveSpeedMultiplier = 1.0;  // 8% increase per wave
@@ -51,10 +56,10 @@ class Ball {
                 this.sprite.body.setVelocityX(sign * minHorizontal);
             }
 
-            // Clamp speed
+            // Clamp speed (using upgraded max speed)
             const speed = vel.length();
-            if (speed > CONFIG.BALL.MAX_SPEED) {
-                vel.normalize().scale(CONFIG.BALL.MAX_SPEED);
+            if (speed > this.maxSpeed) {
+                vel.normalize().scale(this.maxSpeed);
             } else if (speed < CONFIG.BALL.MIN_SPEED && speed > 0) {
                 vel.normalize().scale(CONFIG.BALL.MIN_SPEED);
             }
@@ -80,7 +85,7 @@ class Ball {
     getEffectiveSpeed() {
         const waveSpeed = this.baseSpeed * this.waveSpeedMultiplier;
         const rallyBonus = 1 + (this.rallyHits * this.rallyAcceleration);
-        return Math.min(waveSpeed * rallyBonus, CONFIG.BALL.MAX_SPEED);
+        return Math.min(waveSpeed * rallyBonus, this.maxSpeed);
     }
 
     // Set wave multiplier (called at wave start)
@@ -105,9 +110,9 @@ class Ball {
         const maxAngle = 60 * (Math.PI / 180);
         const angle = hitPos * maxAngle;
 
-        // Apply rally acceleration (2% faster per hit)
+        // Apply rally acceleration (2% faster per hit, capped at upgraded max speed)
         const currentSpeed = this.sprite.body.velocity.length();
-        const newSpeed = Math.min(currentSpeed * (1 + this.rallyAcceleration), CONFIG.BALL.MAX_SPEED);
+        const newSpeed = Math.min(currentSpeed * (1 + this.rallyAcceleration), this.maxSpeed);
 
         this.sprite.body.setVelocity(
             Math.sin(angle) * newSpeed,
@@ -138,7 +143,7 @@ class Ball {
 
     speedUp(factor = 1.1) {
         const vel = this.sprite.body.velocity;
-        const newSpeed = Math.min(vel.length() * factor, CONFIG.BALL.MAX_SPEED);
+        const newSpeed = Math.min(vel.length() * factor, this.maxSpeed);
         vel.normalize().scale(newSpeed);
     }
 
