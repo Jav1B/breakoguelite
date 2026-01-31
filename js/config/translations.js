@@ -76,7 +76,12 @@ const TRANSLATIONS = {
         ready: 'Ready!',
 
         // Landscape warning
-        rotateDevice: 'Please rotate your device to portrait mode'
+        rotateDevice: 'Please rotate your device to portrait mode',
+
+        // Cheats/Debug
+        resetProgress: 'RESET',
+        resetConfirm: 'Reset all progress?',
+        cheatsEnabled: 'CHEAT ACTIVATED!'
     },
 
     es: {
@@ -155,6 +160,11 @@ const TRANSLATIONS = {
         ready: 'Listo!',
 
         // Landscape warning
-        rotateDevice: 'Por favor, gira tu dispositivo a modo vertical'
+        rotateDevice: 'Por favor, gira tu dispositivo a modo vertical',
+
+        // Cheats/Debug
+        resetProgress: 'REINICIAR',
+        resetConfirm: 'Reiniciar todo el progreso?',
+        cheatsEnabled: 'TRUCO ACTIVADO!'
     }
 };

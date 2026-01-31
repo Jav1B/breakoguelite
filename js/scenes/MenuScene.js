@@ -2,6 +2,8 @@
 class MenuScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MenuScene' });
+        this.titleClickCount = 0;
+        this.lastClickTime = 0;
     }
 
     create() {
@@ -20,13 +22,53 @@ class MenuScene extends Phaser.Scene {
         // Language flags (top right)
         this.createLanguageFlags(width);
 
-        // Title
-        this.add.text(width / 2, 100, t('title'), {
+        // Title (clickable for secret cheat - 5 clicks = max gems)
+        const title = this.add.text(width / 2, 100, t('title'), {
             fontSize: '48px',
             fontFamily: 'Arial',
             fontStyle: 'bold',
             color: CONFIG.COLORS.UI_ACCENT
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setInteractive({ useHandCursor: false });
+
+        title.on('pointerdown', () => {
+            const now = Date.now();
+            // Reset count if more than 1 second between clicks
+            if (now - this.lastClickTime > 1000) {
+                this.titleClickCount = 0;
+            }
+            this.lastClickTime = now;
+            this.titleClickCount++;
+
+            if (this.titleClickCount >= 5) {
+                this.titleClickCount = 0;
+                // Add max gems (enough to buy all upgrades and then some)
+                saveData.gems = 9999;
+                saveData.shards = 999;
+                saveManager.save(saveData);
+
+                // Flash effect
+                this.cameras.main.flash(200, 255, 215, 0);
+
+                // Show cheat message
+                const cheatText = this.add.text(width / 2, height / 2, t('cheatsEnabled'), {
+                    fontSize: '32px',
+                    fontFamily: 'Arial',
+                    fontStyle: 'bold',
+                    color: '#ffd700'
+                }).setOrigin(0.5);
+
+                this.tweens.add({
+                    targets: cheatText,
+                    alpha: 0,
+                    y: height / 2 - 50,
+                    duration: 1500,
+                    onComplete: () => {
+                        cheatText.destroy();
+                        this.scene.restart();
+                    }
+                });
+            }
+        });
 
         this.add.text(width / 2, 150, t('subtitle'), {
             fontSize: '32px',
@@ -87,6 +129,79 @@ class MenuScene extends Phaser.Scene {
             fontFamily: 'Arial',
             color: '#666666'
         }).setOrigin(0.5);
+
+        // Reset button (bottom left)
+        this.createResetButton(80, height - 30, t);
+    }
+
+    createResetButton(x, y, t) {
+        const resetBtn = this.add.text(x, y, t('resetProgress'), {
+            fontSize: '14px',
+            fontFamily: 'Arial',
+            color: '#666666'
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        resetBtn.on('pointerover', () => resetBtn.setColor('#ff6666'));
+        resetBtn.on('pointerout', () => resetBtn.setColor('#666666'));
+
+        resetBtn.on('pointerdown', () => {
+            // Show confirmation dialog
+            if (this.confirmDialog) return;
+
+            const width = this.cameras.main.width;
+            const height = this.cameras.main.height;
+
+            // Dim background
+            const overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7);
+
+            // Dialog box
+            const dialog = this.add.rectangle(width / 2, height / 2, 280, 120, 0x333333)
+                .setStrokeStyle(2, 0xff6666);
+
+            // Confirm text
+            const confirmText = this.add.text(width / 2, height / 2 - 25, t('resetConfirm'), {
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                color: '#ffffff'
+            }).setOrigin(0.5);
+
+            // Yes button
+            const yesBtn = this.add.text(width / 2 - 50, height / 2 + 25, 'YES', {
+                fontSize: '16px',
+                fontFamily: 'Arial',
+                fontStyle: 'bold',
+                color: '#ff6666'
+            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+            yesBtn.on('pointerover', () => yesBtn.setColor('#ff9999'));
+            yesBtn.on('pointerout', () => yesBtn.setColor('#ff6666'));
+            yesBtn.on('pointerdown', () => {
+                saveManager.reset();
+                this.game.saveData = saveManager.load();
+                this.scene.restart();
+            });
+
+            // No button
+            const noBtn = this.add.text(width / 2 + 50, height / 2 + 25, 'NO', {
+                fontSize: '16px',
+                fontFamily: 'Arial',
+                fontStyle: 'bold',
+                color: '#66ff66'
+            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+            noBtn.on('pointerover', () => noBtn.setColor('#99ff99'));
+            noBtn.on('pointerout', () => noBtn.setColor('#66ff66'));
+            noBtn.on('pointerdown', () => {
+                overlay.destroy();
+                dialog.destroy();
+                confirmText.destroy();
+                yesBtn.destroy();
+                noBtn.destroy();
+                this.confirmDialog = false;
+            });
+
+            this.confirmDialog = true;
+        });
     }
 
     createLanguageFlags(width) {
