@@ -73,7 +73,7 @@ class GameScene extends Phaser.Scene {
         this.bricks.forEach(brick => {
             this.physics.add.collider(ball.getBody(), brick.getBody(), () => {
                 this.onBallHitBrick(ball, brick);
-            });
+            }, () => !ball.isFireball);
         });
 
         return ball;
@@ -242,7 +242,7 @@ class GameScene extends Phaser.Scene {
             this.balls.forEach(ball => {
                 this.physics.add.collider(ball.getBody(), brick.getBody(), () => {
                     this.onBallHitBrick(ball, brick);
-                });
+                }, () => !ball.isFireball);
             });
         });
     }
@@ -250,7 +250,7 @@ class GameScene extends Phaser.Scene {
     onBallHitBrick(ball, brick) {
         if (brick.isDestroyed()) return;
 
-        // Fireball does extra damage and doesn't bounce
+        // Fireball does 3x damage and passes through bricks
         const damage = ball.isFireball ? 3 : 1;
         const critChance = this.upgradeManager.getCritChance();
         const isCrit = Math.random() < critChance;
@@ -499,7 +499,7 @@ class GameScene extends Phaser.Scene {
         this.bricks.forEach(brick => {
             this.physics.add.collider(newBall.getBody(), brick.getBody(), () => {
                 this.onBallHitBrick(newBall, brick);
-            });
+            }, () => !newBall.isFireball);
         });
     }
 
