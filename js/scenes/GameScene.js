@@ -378,9 +378,15 @@ class GameScene extends Phaser.Scene {
 
             // Add collision with all balls
             this.balls.forEach(ball => {
-                this.physics.add.collider(ball.getBody(), brick.getBody(), () => {
-                    this.onBallHitBrick(ball, brick);
-                }, () => !ball.isFireball);
+                if (ball.isFireball) {
+                    this.physics.add.overlap(ball.getBody(), brick.getBody(), () => {
+                        this.onBallHitBrick(ball, brick);
+                    });
+                } else {
+                    this.physics.add.collider(ball.getBody(), brick.getBody(), () => {
+                        this.onBallHitBrick(ball, brick);
+                    });
+                }
             });
         });
     }
@@ -471,7 +477,7 @@ class GameScene extends Phaser.Scene {
         this.handleFallingBlocks(destroyedCol, destroyedRow);
 
         // Check wave complete
-        if (this.waveManager.isWaveComplete()) {
+        if (this.waveManager.isWaveComplete() && !this.isProcessingFallingBlocks) {
             this.onWaveComplete();
         }
     }
