@@ -47,31 +47,37 @@ class BootScene extends Phaser.Scene {
         this.load.image('flag-en', 'https://flagcdn.com/w40/gb.png');
         this.load.image('flag-es', 'https://flagcdn.com/w40/es.png');
 
-        // Load sprite images
-        this.load.image('ball-normal', 'assets/sprites/ball-normal.png');
-        this.load.image('ball-fireball', 'assets/sprites/ball-fireball.png');
-        this.load.image('paddle-standard', 'assets/sprites/paddle-standard.png');
-        this.load.image('paddle-wide', 'assets/sprites/paddle-wide.png');
+        // Load sprite images (food theme)
+        this.load.image('ball-normal', 'assets/sprites/food-game/ball-normal.png');
+        this.load.image('ball-fireball', 'assets/sprites/food-game/ball-fireball.png');
+        this.load.image('paddle-standard', 'assets/sprites/food-game/paddle-standard.png');
+        this.load.image('paddle-wide', 'assets/sprites/food-game/paddle-wide.png');
 
-        // Load brick sprites
-        this.load.image('brick-normal', 'assets/sprites/bricks/brick-normal.webp');
-        this.load.image('brick-tough', 'assets/sprites/bricks/brick-tough.webp');
-        this.load.image('brick-tough3', 'assets/sprites/bricks/brick-tough3.webp');
-        this.load.image('brick-explosive', 'assets/sprites/bricks/brick-explosive.webp');
-        this.load.image('brick-bomb-purple', 'assets/sprites/bricks/brick-bomb-purple.webp');
-        this.load.image('brick-bomb-red', 'assets/sprites/bricks/brick-bomb-red.webp');
-        this.load.image('brick-bomb-gold', 'assets/sprites/bricks/brick-bomb-gold.webp');
-        this.load.image('brick-gold', 'assets/sprites/bricks/brick-gold.webp');
-        this.load.image('brick-mystery', 'assets/sprites/bricks/brick-mystery.webp');
-        this.load.image('brick-indestructible', 'assets/sprites/bricks/brick-indestructible.webp');
+        // Load brick sprites (food theme)
+        this.load.image('brick-normal', 'assets/sprites/food-game/bricks/brick-normal.png');
+        this.load.image('brick-tough', 'assets/sprites/food-game/bricks/brick-tough.png');
+        this.load.image('brick-tough3', 'assets/sprites/food-game/bricks/brick-tough3.png');
+        this.load.image('brick-explosive', 'assets/sprites/food-game/bricks/brick-explosive.png');
+        this.load.image('brick-bomb-purple', 'assets/sprites/food-game/bricks/brick-bomb-purple.png');
+        this.load.image('brick-bomb-red', 'assets/sprites/food-game/bricks/brick-bomb-red.png');
+        this.load.image('brick-bomb-gold', 'assets/sprites/food-game/bricks/brick-bomb-gold.png');
+        this.load.image('brick-gold', 'assets/sprites/food-game/bricks/brick-gold.png');
+        this.load.image('brick-mystery', 'assets/sprites/food-game/bricks/brick-mystery.png');
+        this.load.image('brick-indestructible', 'assets/sprites/food-game/bricks/brick-indestructible.png');
 
-        // Load power-up sprites
-        this.load.image('powerup-multiball', 'assets/sprites/powerups/powerup-multiball.webp');
-        this.load.image('powerup-wide-paddle', 'assets/sprites/powerups/powerup-wide-paddle.webp');
-        this.load.image('powerup-fireball', 'assets/sprites/powerups/powerup-fireball.webp');
-        this.load.image('powerup-slow', 'assets/sprites/powerups/powerup-slow.webp');
-        this.load.image('powerup-shield', 'assets/sprites/powerups/powerup-shield.webp');
-        this.load.image('powerup-magnet', 'assets/sprites/powerups/powerup-magnet.webp');
+        // Load power-up sprites (food theme)
+        this.load.image('powerup-multiball', 'assets/sprites/food-game/powerups/powerup-multiball.png');
+        this.load.image('powerup-wide-paddle', 'assets/sprites/food-game/powerups/powerup-wide-paddle.png');
+        this.load.image('powerup-fireball', 'assets/sprites/food-game/powerups/powerup-fireball.png');
+        this.load.image('powerup-slow', 'assets/sprites/food-game/powerups/powerup-slow.png');
+        this.load.image('powerup-shield', 'assets/sprites/food-game/powerups/powerup-shield.png');
+        this.load.image('powerup-magnet', 'assets/sprites/food-game/powerups/powerup-magnet.png');
+
+        // Load coin sprites (food theme)
+        this.load.image('coin-1', 'assets/sprites/food-game/coins/coin-1.png');
+        this.load.image('coin-2', 'assets/sprites/food-game/coins/coin-2.png');
+        this.load.image('coin-3', 'assets/sprites/food-game/coins/coin-3.png');
+        this.load.image('coin-5', 'assets/sprites/food-game/coins/coin-5.png');
 
         // Load background images
         this.load.image('bg-menu', 'assets/sprites/backgrounds/bg-menu.webp');

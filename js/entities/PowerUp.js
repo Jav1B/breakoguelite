@@ -89,15 +89,26 @@ class CoinDrop {
         this.value = value;
         this.collected = false;
 
-        // Size and color based on value
+        // Size and sprite based on value
         const coinConfig = this.getCoinConfig(value);
 
-        // Create coin as a circle with value-based size
-        this.sprite = scene.add.circle(x, y, coinConfig.radius, coinConfig.color);
-        scene.physics.add.existing(this.sprite, false);
+        // Check if food sprite texture exists
+        const hasSprite = coinConfig.spriteKey && scene.textures.exists(coinConfig.spriteKey);
 
-        this.sprite.body.setCircle(coinConfig.radius);
-        this.radius = coinConfig.radius;
+        if (hasSprite) {
+            // Create coin using food sprite
+            this.sprite = scene.add.image(x, y, coinConfig.spriteKey);
+            this.sprite.setDisplaySize(coinConfig.size, coinConfig.size);
+            scene.physics.add.existing(this.sprite, false);
+            this.sprite.body.setCircle(coinConfig.size / 2, 0, 0);
+            this.radius = coinConfig.size / 2;
+        } else {
+            // Fallback to circle if sprite not loaded
+            this.sprite = scene.add.circle(x, y, coinConfig.radius, coinConfig.color);
+            scene.physics.add.existing(this.sprite, false);
+            this.sprite.body.setCircle(coinConfig.radius);
+            this.radius = coinConfig.radius;
+        }
 
         // Initial burst upward and sideways
         this.sprite.body.setVelocity(
@@ -110,18 +121,21 @@ class CoinDrop {
         this.sprite.body.setGravityY(300);
 
         this.sprite.parentClass = this;
+        this.hasSprite = hasSprite;
 
-        // Sparkle effect with value-based stroke
-        this.sprite.setStrokeStyle(coinConfig.stroke, 0xffffff, 0.8);
+        // Sparkle effect with value-based stroke (only for fallback circles)
+        if (!hasSprite) {
+            this.sprite.setStrokeStyle(coinConfig.stroke, 0xffffff, 0.8);
 
-        // Add value text for coins worth 2+
-        if (value >= 2) {
-            this.valueText = scene.add.text(x, y, value.toString(), {
-                fontSize: coinConfig.fontSize,
-                fontFamily: 'Arial',
-                fontStyle: 'bold',
-                color: '#000000'
-            }).setOrigin(0.5);
+            // Add value text for coins worth 2+ (only for fallback)
+            if (value >= 2) {
+                this.valueText = scene.add.text(x, y, value.toString(), {
+                    fontSize: coinConfig.fontSize,
+                    fontFamily: 'Arial',
+                    fontStyle: 'bold',
+                    color: '#000000'
+                }).setOrigin(0.5);
+            }
         }
 
         // Pulsing effect for high-value coins
@@ -139,17 +153,17 @@ class CoinDrop {
 
     getCoinConfig(value) {
         if (value >= 5) {
-            // Large gold coin with sparkle
-            return { radius: 14, color: 0xffd700, stroke: 3, fontSize: '14px' };
+            // Cake for high value coins
+            return { spriteKey: 'coin-5', size: 32, radius: 14, color: 0xffd700, stroke: 3, fontSize: '14px' };
         } else if (value >= 3) {
-            // Medium silver-gold coin
-            return { radius: 12, color: 0xffec8b, stroke: 2, fontSize: '12px' };
+            // Cupcake for medium-high value
+            return { spriteKey: 'coin-3', size: 28, radius: 12, color: 0xffec8b, stroke: 2, fontSize: '12px' };
         } else if (value >= 2) {
-            // Small bronze coin
-            return { radius: 10, color: 0xdaa520, stroke: 2, fontSize: '10px' };
+            // Chocolate cookie for medium value
+            return { spriteKey: 'coin-2', size: 24, radius: 10, color: 0xdaa520, stroke: 2, fontSize: '10px' };
         } else {
-            // Basic copper coin
-            return { radius: 8, color: 0xcd853f, stroke: 1, fontSize: '8px' };
+            // Plain cookie for basic coins
+            return { spriteKey: 'coin-1', size: 20, radius: 8, color: 0xcd853f, stroke: 1, fontSize: '8px' };
         }
     }
 
