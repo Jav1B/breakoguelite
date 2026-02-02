@@ -83,7 +83,10 @@ const TRANSLATIONS = {
         // Cheats/Debug
         resetProgress: 'RESET',
         resetConfirm: 'Reset all progress?',
-        cheatsEnabled: 'CHEAT ACTIVATED!'
+        cheatsEnabled: 'CHEAT ACTIVATED!',
+
+        // Dialogs
+        close: 'CLOSE'
     },
 
     es: {
@@ -169,6 +172,9 @@ const TRANSLATIONS = {
         // Cheats/Debug
         resetProgress: 'REINICIAR',
         resetConfirm: 'Reiniciar todo el progreso?',
-        cheatsEnabled: 'TRUCO ACTIVADO!'
+        cheatsEnabled: 'TRUCO ACTIVADO!',
+
+        // Dialogs
+        close: 'CERRAR'
     }
 };

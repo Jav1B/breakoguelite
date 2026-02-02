@@ -22,13 +22,20 @@ class MenuScene extends Phaser.Scene {
         // Language flags (top right)
         this.createLanguageFlags(width);
 
-        // Title (clickable for secret cheat - 5 clicks = max gems)
-        const title = this.add.text(width / 2, 100, t('title'), {
-            fontSize: '48px',
-            fontFamily: 'Arial',
-            fontStyle: 'bold',
-            color: CONFIG.COLORS.UI_ACCENT
-        }).setOrigin(0.5).setInteractive({ useHandCursor: false });
+        // Title logo (clickable for secret cheat - 5 clicks = max gems)
+        let title;
+        if (this.textures.exists('title-logo')) {
+            title = this.add.image(width / 2, 120, 'title-logo')
+                .setDisplaySize(400, 200)
+                .setInteractive({ useHandCursor: false });
+        } else {
+            title = this.add.text(width / 2, 100, t('title'), {
+                fontSize: '48px',
+                fontFamily: 'Arial',
+                fontStyle: 'bold',
+                color: CONFIG.COLORS.UI_ACCENT
+            }).setOrigin(0.5).setInteractive({ useHandCursor: false });
+        }
 
         title.on('pointerdown', () => {
             const now = Date.now();
@@ -70,54 +77,58 @@ class MenuScene extends Phaser.Scene {
             }
         });
 
-        this.add.text(width / 2, 150, t('subtitle'), {
-            fontSize: '32px',
-            fontFamily: 'Arial',
-            color: CONFIG.COLORS.UI_TEXT
-        }).setOrigin(0.5);
-
-        // Stats display
-        const statsY = 250;
-        this.add.text(width / 2, statsY, t('stats'), {
+        // Currency display (compact, below title)
+        const currencyY = 240;
+        this.add.text(width / 2 - 60, currencyY, `${saveData.gems}`, {
             fontSize: '20px',
             fontFamily: 'Arial',
-            color: CONFIG.COLORS.UI_ACCENT
-        }).setOrigin(0.5);
+            fontStyle: 'bold',
+            color: '#e040fb'
+        }).setOrigin(1, 0.5);
+        this.add.text(width / 2 - 55, currencyY, t('gems'), {
+            fontSize: '14px',
+            fontFamily: 'Arial',
+            color: '#888888'
+        }).setOrigin(0, 0.5);
 
-        const stats = [
-            `${t('highestWave')}: ${saveData.highestWave}`,
-            `${t('totalRuns')}: ${saveData.totalRuns}`,
-            `${t('bricksDestroyed')}: ${saveData.totalBricksDestroyed}`,
-            `${t('gems')}: ${saveData.gems}`,
-            `${t('shards')}: ${saveData.shards}`
-        ];
-
-        stats.forEach((stat, i) => {
-            this.add.text(width / 2, statsY + 35 + i * 25, stat, {
-                fontSize: '16px',
-                fontFamily: 'Arial',
-                color: CONFIG.COLORS.UI_TEXT
-            }).setOrigin(0.5);
-        });
+        this.add.text(width / 2 + 60, currencyY, `${saveData.shards}`, {
+            fontSize: '20px',
+            fontFamily: 'Arial',
+            fontStyle: 'bold',
+            color: '#00e5ff'
+        }).setOrigin(1, 0.5);
+        this.add.text(width / 2 + 65, currencyY, t('shards'), {
+            fontSize: '14px',
+            fontFamily: 'Arial',
+            color: '#888888'
+        }).setOrigin(0, 0.5);
 
         // Play button
-        const playBtn = this.createButton(width / 2, 500, t('play'), () => {
+        const playBtn = this.createButton(width / 2, 340, t('play'), () => {
             this.scene.start('GameScene');
         });
 
-        // Upgrades button
-        const upgradeBtn = this.createButton(width / 2, 570, t('upgrades'), () => {
+        // Check if any upgrades are affordable
+        const canAffordUpgrade = this.checkAffordableUpgrades(saveData);
+
+        // Upgrades button (highlighted if upgrades available)
+        const upgradeBtn = this.createButton(width / 2, 410, t('upgrades'), () => {
             this.scene.start('UpgradeScene');
+        }, canAffordUpgrade);
+
+        // Stats button
+        const statsBtn = this.createButton(width / 2, 480, t('stats'), () => {
+            this.showStatsDialog(saveData, t);
         });
 
         // Instructions
-        this.add.text(width / 2, 700, t('moveInstruction'), {
+        this.add.text(width / 2, 560, t('moveInstruction'), {
             fontSize: '14px',
             fontFamily: 'Arial',
             color: '#888888'
         }).setOrigin(0.5);
 
-        this.add.text(width / 2, 725, t('launchInstruction'), {
+        this.add.text(width / 2, 585, t('launchInstruction'), {
             fontSize: '14px',
             fontFamily: 'Arial',
             color: '#888888'
@@ -246,22 +257,131 @@ class MenuScene extends Phaser.Scene {
         return flag;
     }
 
-    createButton(x, y, text, callback) {
-        const btn = this.add.rectangle(x, y, 200, 50, 0x333333)
+    createButton(x, y, text, callback, highlight = false) {
+        const baseColor = highlight ? 0x4a3366 : 0x333333;
+        const hoverColor = highlight ? 0x5a4376 : 0x444444;
+        const strokeColor = highlight ? 0xe040fb : Phaser.Display.Color.HexStringToColor(CONFIG.COLORS.UI_ACCENT).color;
+
+        const btn = this.add.rectangle(x, y, 200, 50, baseColor)
             .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => btn.setFillStyle(0x444444))
-            .on('pointerout', () => btn.setFillStyle(0x333333))
+            .on('pointerover', () => btn.setFillStyle(hoverColor))
+            .on('pointerout', () => btn.setFillStyle(baseColor))
             .on('pointerdown', callback);
 
-        btn.setStrokeStyle(2, Phaser.Display.Color.HexStringToColor(CONFIG.COLORS.UI_ACCENT).color);
+        btn.setStrokeStyle(highlight ? 3 : 2, strokeColor);
 
         this.add.text(x, y, text, {
             fontSize: '20px',
             fontFamily: 'Arial',
             fontStyle: 'bold',
-            color: CONFIG.COLORS.UI_TEXT
+            color: highlight ? '#e040fb' : CONFIG.COLORS.UI_TEXT
         }).setOrigin(0.5);
 
+        // Add pulsing glow effect for highlighted buttons
+        if (highlight) {
+            this.tweens.add({
+                targets: btn,
+                alpha: 0.8,
+                duration: 600,
+                yoyo: true,
+                repeat: -1
+            });
+        }
+
         return btn;
+    }
+
+    checkAffordableUpgrades(saveData) {
+        const upgradeKeys = ['STARTING_COINS', 'PADDLE_SIZE', 'BALL_SPEED', 'COIN_MULT', 'EXTRA_LIVES', 'CRIT_CHANCE', 'SHOP_DISCOUNT'];
+        const keyMap = {
+            'STARTING_COINS': 'startingCoins',
+            'PADDLE_SIZE': 'paddleSize',
+            'BALL_SPEED': 'ballSpeed',
+            'COIN_MULT': 'coinMult',
+            'EXTRA_LIVES': 'extraLives',
+            'CRIT_CHANCE': 'critChance',
+            'SHOP_DISCOUNT': 'shopDiscount'
+        };
+
+        for (const costKey of upgradeKeys) {
+            const upgradeKey = keyMap[costKey];
+            const currentLevel = saveData.upgrades[upgradeKey] || 0;
+            const costs = CONFIG.UPGRADE_COSTS[costKey];
+            if (currentLevel < costs.length && saveData.gems >= costs[currentLevel]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    showStatsDialog(saveData, t) {
+        if (this.statsDialog) return;
+
+        const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
+
+        // Dim background
+        const overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7)
+            .setInteractive();
+
+        // Dialog box
+        const dialog = this.add.rectangle(width / 2, height / 2, 300, 280, 0x222222)
+            .setStrokeStyle(2, Phaser.Display.Color.HexStringToColor(CONFIG.COLORS.UI_ACCENT).color);
+
+        // Title
+        const titleText = this.add.text(width / 2, height / 2 - 110, t('stats'), {
+            fontSize: '24px',
+            fontFamily: 'Arial',
+            fontStyle: 'bold',
+            color: CONFIG.COLORS.UI_ACCENT
+        }).setOrigin(0.5);
+
+        // Stats
+        const stats = [
+            `${t('highestWave')}: ${saveData.highestWave}`,
+            `${t('totalRuns')}: ${saveData.totalRuns}`,
+            `${t('bricksDestroyed')}: ${saveData.totalBricksDestroyed}`,
+            `${t('gems')}: ${saveData.gems}`,
+            `${t('shards')}: ${saveData.shards}`
+        ];
+
+        const statTexts = stats.map((stat, i) => {
+            return this.add.text(width / 2, height / 2 - 60 + i * 30, stat, {
+                fontSize: '16px',
+                fontFamily: 'Arial',
+                color: CONFIG.COLORS.UI_TEXT
+            }).setOrigin(0.5);
+        });
+
+        // Close button
+        const closeBtn = this.add.text(width / 2, height / 2 + 100, t('close') || 'CLOSE', {
+            fontSize: '18px',
+            fontFamily: 'Arial',
+            fontStyle: 'bold',
+            color: CONFIG.COLORS.UI_ACCENT
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        closeBtn.on('pointerover', () => closeBtn.setColor('#ffffff'));
+        closeBtn.on('pointerout', () => closeBtn.setColor(CONFIG.COLORS.UI_ACCENT));
+        closeBtn.on('pointerdown', () => {
+            overlay.destroy();
+            dialog.destroy();
+            titleText.destroy();
+            statTexts.forEach(t => t.destroy());
+            closeBtn.destroy();
+            this.statsDialog = false;
+        });
+
+        // Also close on overlay click
+        overlay.on('pointerdown', () => {
+            overlay.destroy();
+            dialog.destroy();
+            titleText.destroy();
+            statTexts.forEach(t => t.destroy());
+            closeBtn.destroy();
+            this.statsDialog = false;
+        });
+
+        this.statsDialog = true;
     }
 }
