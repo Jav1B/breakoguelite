@@ -84,6 +84,9 @@ class BootScene extends Phaser.Scene {
         this.load.image('bg-game', 'assets/sprites/backgrounds/bg-game.webp');
         this.load.image('bg-shop', 'assets/sprites/backgrounds/bg-shop.webp');
         this.load.image('bg-gameover', 'assets/sprites/backgrounds/bg-gameover.webp');
+
+        // Load title logo
+        this.load.image('title-logo', 'assets/sprites/title-logo.webp');
     }
 
     create() {
