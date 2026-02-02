@@ -9,7 +9,10 @@ class Paddle {
 
         // Create as a sprite with physics
         this.sprite = scene.add.sprite(x, y, 'paddle-standard');
-        this.sprite.setDisplaySize(width, height);
+        // Scale sprite to maintain aspect ratio - use width as primary dimension
+        // but cap height to prevent overly tall sprites
+        const spriteHeight = Math.min(height * 2, width * 0.5);
+        this.sprite.setDisplaySize(width, spriteHeight);
         scene.physics.add.existing(this.sprite, false);
 
         // Configure physics body
@@ -42,7 +45,9 @@ class Paddle {
         this.currentWidth = width;
         this.isWide = isWide;
         this.sprite.setTexture(isWide ? 'paddle-wide' : 'paddle-standard');
-        this.sprite.setDisplaySize(width, CONFIG.PADDLE.HEIGHT);
+        // Scale sprite to maintain aspect ratio
+        const spriteHeight = Math.min(CONFIG.PADDLE.HEIGHT * 2, width * 0.5);
+        this.sprite.setDisplaySize(width, spriteHeight);
         this.sprite.body.setSize(width, CONFIG.PADDLE.HEIGHT);
     }
 

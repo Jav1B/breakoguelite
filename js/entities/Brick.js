@@ -19,9 +19,11 @@ class Brick {
         const hasSprite = spriteKey && scene.textures.exists(spriteKey);
 
         if (hasSprite) {
-            // Create brick sprite
+            // Create brick sprite - scale to fit while maintaining aspect ratio
             this.sprite = scene.add.image(x, y, spriteKey);
-            this.sprite.setDisplaySize(CONFIG.BRICK.WIDTH, CONFIG.BRICK.HEIGHT);
+            // Use the smaller dimension to keep square sprites properly proportioned
+            const spriteSize = Math.min(CONFIG.BRICK.WIDTH, CONFIG.BRICK.HEIGHT);
+            this.sprite.setDisplaySize(spriteSize, spriteSize);
         } else {
             // Fallback to rectangle if sprite not loaded
             this.sprite = scene.add.rectangle(
